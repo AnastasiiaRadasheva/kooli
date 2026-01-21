@@ -7,5 +7,11 @@ namespace Kool.Models
 {
     public class OpetajaViewModels
     {
+        public string Nimi { get; set; }
+
+        public string Kvalifikatsioon { get; set; }
+
+        public string Email { get; set; }
+        public string Password { get; set; }
     }
 }

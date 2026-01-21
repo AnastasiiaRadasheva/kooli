@@ -5,8 +5,13 @@ using System.Web;
 
 namespace Kool.Models
 {
-    public class RegistreerimineViewModels
+    public class Registreerimine
     {
-        public int KoolitusId { get; set; }
+
+        string Id { get; set; }
+
+        [Required]
+        int nimi { get; set }
+
     }
 }

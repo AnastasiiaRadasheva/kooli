@@ -180,6 +180,7 @@
     <Compile Include="Models\KoolitusViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\OpetajaViewModels.cs" />
+    <Compile Include="Models\Registreerimine.cs" />
     <Compile Include="Models\RegistreerimineViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
