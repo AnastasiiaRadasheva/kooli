@@ -7,11 +7,12 @@ namespace Kool.Models
 {
     public class Registreerimine
     {
+        public int Id { get; set; }
 
-        string Id { get; set; }
+        public int KoolitusId { get; set; }
 
-        [Required]
-        int nimi { get; set }
+        public string ApplicationUserId { get; set; }
 
+        public string Staatus { get; set; }
     }
 }

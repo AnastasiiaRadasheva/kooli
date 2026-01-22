@@ -5,13 +5,14 @@ using System.Web;
 
 namespace Kool.Models
 {
-    public class OpetajaViewModels
+    public class Opetaja
     {
+        public int Id { get; set; }
         public string Nimi { get; set; }
-
         public string Kvalifikatsioon { get; set; }
+        public string FotoPath { get; set; }
 
-        public string Email { get; set; }
-        public string Password { get; set; }
+        // связь с логином
+        public string ApplicationUserId { get; set; }
     }
 }

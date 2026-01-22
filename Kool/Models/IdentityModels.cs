@@ -29,5 +29,9 @@ namespace Kool.Models
         {
             return new ApplicationDbContext();
         }
+        public DbSet<Keelekursus> Keelekursused { get; set; }
+        public DbSet<Opetaja> Opetajad { get; set; }
+        public DbSet<Koolitus> Koolitused { get; set; }
+        public DbSet<Registreerimine> Registreerimised { get; set; }
     }
 }
