@@ -106,4 +106,27 @@ namespace Kool
             return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
         }
     }
+    public static class RollideSeadistaja
+    {
+        public static void SeedRoles()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var roleManager =
+                    new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+
+                string[] rollid = { "Admin", "Opetaja", "Opilane" };
+
+                foreach (var roll in rollid)
+                {
+                    if (!roleManager.RoleExists(roll))
+                    {
+                        roleManager.Create(new IdentityRole(roll));
+                    }
+                }
+            }
+        }
+    }
+
+
 }
