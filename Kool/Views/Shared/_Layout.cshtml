@@ -21,6 +21,29 @@
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Create", "Create", "Registreerimines", new { area = "" }, new { @class = "nav-link" })</li>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li>@Html.ActionLink("Pühad", "Index", "Pyhas", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("Vastused", "Index", "Kylalines", new { area = "" }, new { @class = "nav-link" })</li>
+                    }
+                    @if (User.IsInRole("Opetaja"))
+                    {
+                        <li class="nav-item">
+                            @Html.ActionLink("Minu koolitused", "MinuKoolitused", "Koolitus", null, new { @class = "nav-link" })
+                        </li>
+                    }
+
+                    @if (User.IsInRole("Opilane"))
+                    {
+                        <li class="nav-item">
+                            @Html.ActionLink("Minu koolitused", "MinuKoolitused", "Registreerimines", null, new { @class = "nav-link" })
+                        </li>
+                    }
+
+
+
                 </ul>
                  @Html.Partial("_LoginPartial")
             </div>
@@ -30,7 +53,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - Anastasiia Radasheva</p>
         </footer>
     </div>
 

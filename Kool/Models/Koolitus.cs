@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kool.Models
 {
@@ -17,6 +20,13 @@ namespace Kool.Models
 
         public decimal Hind { get; set; }
         public int MaxOsalejaid { get; set; }
-    }
 
+        [ForeignKey(nameof(KeelekursusId))]
+        public virtual Keelekursus Keelekursus { get; set; }
+
+        [ForeignKey(nameof(OpetajaId))]
+        public virtual Opetaja Opetaja { get; set; }
+
+        public virtual ICollection<Registreerimine> Registreerimised { get; set; } = new List<Registreerimine>();
+    }
 }

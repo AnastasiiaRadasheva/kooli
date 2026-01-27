@@ -1,63 +1,55 @@
 ﻿@model IEnumerable<Kool.Models.Koolitus>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Koolitused";
 }
 
-<h2>Index</h2>
+<h2>Koolitused</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+
 <table class="table">
     <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.KeelekursusId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.OpetajaId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.AlgusKuupaev)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.LoppKuupaev)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Hind)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MaxOsalejaid)
-        </th>
-        <th></th>
+        <th>@Html.DisplayNameFor(model => model.KeelekursusId)</th>
+        <th>@Html.DisplayNameFor(model => model.OpetajaId)</th>
+        <th>@Html.DisplayNameFor(model => model.AlgusKuupaev)</th>
+        <th>@Html.DisplayNameFor(model => model.LoppKuupaev)</th>
+        <th>@Html.DisplayNameFor(model => model.Hind)</th>
+        <th>@Html.DisplayNameFor(model => model.MaxOsalejaid)</th>
+        <th>Tegevused</th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.KeelekursusId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OpetajaId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AlgusKuupaev)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LoppKuupaev)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Hind)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MaxOsalejaid)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.KeelekursusId)</td>
+            <td>@Html.DisplayFor(modelItem => item.OpetajaId)</td>
+            <td>@Html.DisplayFor(modelItem => item.AlgusKuupaev)</td>
+            <td>@Html.DisplayFor(modelItem => item.LoppKuupaev)</td>
+            <td>@Html.DisplayFor(modelItem => item.Hind)</td>
+            <td>@Html.DisplayFor(modelItem => item.MaxOsalejaid)</td>
 
+            <td>
+                @if (Request.IsAuthenticated && User.IsInRole("Opilane"))
+                {
+                    @Html.ActionLink(
+                        "Registreeru",
+                        "Create",
+                        "Registreerimines",
+                        new { koolitusId = item.Id },
+                        new { @class = "btn btn-primary btn-sm" }
+                    )
+                    <span> | </span>
+                }
+
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                <span> | </span>
+                @Html.ActionLink("Details", "Details", new { id = item.Id })
+                <span> | </span>
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
 </table>

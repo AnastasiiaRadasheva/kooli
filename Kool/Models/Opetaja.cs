@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Kool.Models
 {
     public class Opetaja
@@ -12,7 +15,11 @@ namespace Kool.Models
         public string Kvalifikatsioon { get; set; }
         public string FotoPath { get; set; }
 
-        // связь с логином
         public string ApplicationUserId { get; set; }
+
+        [ForeignKey(nameof(ApplicationUserId))]
+        public virtual ApplicationUser ApplicationUser { get; set; }
+
+        public virtual ICollection<Koolitus> Koolitused { get; set; } = new List<Koolitus>();
     }
 }

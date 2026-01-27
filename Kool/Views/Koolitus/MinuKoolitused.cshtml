@@ -1,0 +1,37 @@
+@model IEnumerable<Kool.Models.Koolitus>
+
+@{
+    ViewBag.Title = "Minu koolitused";
+}
+
+<h2>Minu koolitused</h2>
+
+@if (!Model.Any())
+{
+    <p>Sul ei ole veel oma koolitusi.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <tr>
+            <th>Kursus</th>
+            <th>Keel / Tase</th>
+            <th>Algus</th>
+            <th>Lõpp</th>
+            <th>Hind</th>
+            <th>Max osalejaid</th>
+        </tr>
+
+        @foreach (var k in Model)
+        {
+            <tr>
+                <td>@(k.Keelekursus?.Nimetus ?? ("Koolitus #" + k.Id))</td>
+                <td>@(k.Keelekursus != null ? (k.Keelekursus.Keel + " / " + k.Keelekursus.Tase) : "")</td>
+                <td>@k.AlgusKuupaev.ToString("dd.MM.yyyy")</td>
+                <td>@k.LoppKuupaev.ToString("dd.MM.yyyy")</td>
+                <td>@k.Hind</td>
+                <td>@k.MaxOsalejaid</td>
+            </tr>
+        }
+    </table>
+}

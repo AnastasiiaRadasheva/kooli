@@ -182,9 +182,16 @@
     <Compile Include="Migrations\202601220907365_Initial.Designer.cs">
       <DependentUpon>202601220907365_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202601271051462_RegistKoolitus.cs" />
+    <Compile Include="Migrations\202601271051462_RegistKoolitus.Designer.cs">
+      <DependentUpon>202601271051462_RegistKoolitus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202601271112228_Regist.cs" />
+    <Compile Include="Migrations\202601271112228_Regist.Designer.cs">
+      <DependentUpon>202601271112228_Regist.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\Course.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Keelekursus.cs" />
     <Compile Include="Models\Koolitus.cs" />
@@ -284,6 +291,8 @@
     <Content Include="Views\Registreerimines\Details.cshtml" />
     <Content Include="Views\Registreerimines\Edit.cshtml" />
     <Content Include="Views\Registreerimines\Index.cshtml" />
+    <Content Include="Views\Registreerimines\MinuKoolitused.cshtml" />
+    <Content Include="Views\Koolitus\MinuKoolitused.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -319,6 +328,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202601220907365_Initial.resx">
       <DependentUpon>202601220907365_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202601271051462_RegistKoolitus.resx">
+      <DependentUpon>202601271051462_RegistKoolitus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202601271112228_Regist.resx">
+      <DependentUpon>202601271112228_Regist.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
