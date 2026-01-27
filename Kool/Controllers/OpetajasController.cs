@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using Kool.Models;
 
@@ -14,38 +10,34 @@ namespace Kool.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: Opetajas
+        // GET: Opetajas  (ВСЕМ можно смотреть)
         public ActionResult Index()
         {
             return View(db.Opetajad.ToList());
         }
 
-        // GET: Opetajas/Details/5
+        // GET: Opetajas/Details/5  (ВСЕМ можно смотреть)
         public ActionResult Details(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Opetaja opetaja = db.Opetajad.Find(id);
-            if (opetaja == null)
-            {
-                return HttpNotFound();
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var opetaja = db.Opetajad.Find(id);
+            if (opetaja == null) return HttpNotFound();
+
             return View(opetaja);
         }
 
-        // GET: Opetajas/Create
+        // GET: Opetajas/Create  (ТОЛЬКО Admin)
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Opetajas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Opetajas/Create  (ТОЛЬКО Admin)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create([Bind(Include = "Id,Nimi,Kvalifikatsioon,FotoPath,ApplicationUserId")] Opetaja opetaja)
         {
             if (ModelState.IsValid)
@@ -58,26 +50,22 @@ namespace Kool.Controllers
             return View(opetaja);
         }
 
-        // GET: Opetajas/Edit/5
+        // GET: Opetajas/Edit/5  (ТОЛЬКО Admin)
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Opetaja opetaja = db.Opetajad.Find(id);
-            if (opetaja == null)
-            {
-                return HttpNotFound();
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var opetaja = db.Opetajad.Find(id);
+            if (opetaja == null) return HttpNotFound();
+
             return View(opetaja);
         }
 
-        // POST: Opetajas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Opetajas/Edit/5  (ТОЛЬКО Admin)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit([Bind(Include = "Id,Nimi,Kvalifikatsioon,FotoPath,ApplicationUserId")] Opetaja opetaja)
         {
             if (ModelState.IsValid)
@@ -89,27 +77,27 @@ namespace Kool.Controllers
             return View(opetaja);
         }
 
-        // GET: Opetajas/Delete/5
+        // GET: Opetajas/Delete/5  (ТОЛЬКО Admin)
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Opetaja opetaja = db.Opetajad.Find(id);
-            if (opetaja == null)
-            {
-                return HttpNotFound();
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var opetaja = db.Opetajad.Find(id);
+            if (opetaja == null) return HttpNotFound();
+
             return View(opetaja);
         }
 
-        // POST: Opetajas/Delete/5
+        // POST: Opetajas/Delete/5  (ТОЛЬКО Admin)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult DeleteConfirmed(int id)
         {
-            Opetaja opetaja = db.Opetajad.Find(id);
+            var opetaja = db.Opetajad.Find(id);
+            if (opetaja == null) return HttpNotFound();
+
             db.Opetajad.Remove(opetaja);
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -117,10 +105,7 @@ namespace Kool.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
+            if (disposing) db.Dispose();
             base.Dispose(disposing);
         }
     }

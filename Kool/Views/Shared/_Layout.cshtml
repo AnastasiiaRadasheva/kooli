@@ -25,8 +25,11 @@
 
                     @if (User.IsInRole("Admin"))
                     {
-                        <li>@Html.ActionLink("Pühad", "Index", "Pyhas", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li>@Html.ActionLink("Vastused", "Index", "Kylalines", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Õpetajad", "Index", "Opetajas", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Keelekursused", "Index", "Keelekursus", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Koolitused", "Index", "Koolitus", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Registreerimised", "Index", "Registreerimines", null, new { @class = "nav-link" })</li>
+
                     }
                     @if (User.IsInRole("Opetaja"))
                     {
