@@ -3,11 +3,22 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using Kool.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Kool.Controllers
 {
     public class OpetajasController : Controller
     {
+        private UserManager<ApplicationUser> userManager;
+        private RoleManager<IdentityRole> roleManager;
+
+        public OpetajasController()
+        {
+            userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+            roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
+        }
+
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Opetajas  (ВСЕМ можно смотреть)
@@ -38,17 +49,17 @@ namespace Kool.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public ActionResult Create([Bind(Include = "Id,Nimi,Kvalifikatsioon,FotoPath,ApplicationUserId")] Opetaja opetaja)
+        public ActionResult Create([Bind(Include = "Id,Nimi,Kvalifikatsioon,FotoPath")] Opetaja opetaja)
         {
             if (ModelState.IsValid)
             {
-                db.Opetajad.Add(opetaja);
+                db.Opetajad.Add(opetaja); // ApplicationUserId будет null
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
             return View(opetaja);
         }
+
 
         // GET: Opetajas/Edit/5  (ТОЛЬКО Admin)
         [Authorize(Roles = "Admin")]

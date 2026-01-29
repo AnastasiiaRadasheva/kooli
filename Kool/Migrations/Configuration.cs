@@ -77,7 +77,7 @@
             if (opilaneUser == null)
             {
                 opilaneUser = new ApplicationUser { UserName = opilaneEmail, Email = opilaneEmail };
-                userManager.Create(opilaneUser, "Opilane123!");
+                userManager.Create(opilaneUser, "opilane@kool.eeopilane@kool.ee");
             }
 
             if (!userManager.IsInRole(opilaneUser.Id, "Opilane"))

@@ -35,10 +35,6 @@ namespace Kool.Controllers
         // GET: Registreerimines/Create?koolitusId=5
         // Õpilane нажимает "Registreeru"
         [Authorize(Roles = "Opilane")]
-
-        [Authorize(Roles = "Admin")]
-        
-        [Authorize(Roles = "Opetaja")]
         public ActionResult Create(int? koolitusId)
         {
             if (koolitusId == null)

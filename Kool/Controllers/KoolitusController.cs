@@ -16,12 +16,14 @@ namespace Kool.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Koolitus
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             return View(db.Koolitused.ToList());
         }
 
         // GET: Koolitus/Details/5
+        [AllowAnonymous]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -41,6 +43,17 @@ namespace Kool.Controllers
         public ActionResult Create()
         {
             return View();
+        }
+        [AllowAnonymous] // чтобы могли смотреть все
+        public ActionResult ByKeelekursus(int id)
+        {
+            var list = db.Koolitused
+                .Include(k => k.Keelekursus)
+                .Include(k => k.Opetaja)
+                .Where(k => k.KeelekursusId == id)
+                .ToList();
+
+            return View("IndexK", list); // или "Index", если хочешь использовать Index.cshtml
         }
 
         // POST: Koolitus/Create
@@ -136,6 +149,16 @@ namespace Kool.Controllers
             db.Koolitused.Remove(koolitus);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+        [AllowAnonymous]
+        public ActionResult IndexK()
+        {
+            var list = db.Koolitused
+                .Include(k => k.Keelekursus)
+                .Include(k => k.Opetaja)
+                .ToList();
+
+            return View("indexK", list); 
         }
 
         protected override void Dispose(bool disposing)

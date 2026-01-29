@@ -21,14 +21,18 @@
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Create", "Create", "Registreerimines", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Keelekursused", "Index", "Keelekursus", new { area = "" }, new { @class = "nav-link" })</li>
 
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("Kõik koolitused", "indexK", "Koolitus", new { area = "" }, new { @class = "nav-link" })</li>
+
+                    }
                     @if (User.IsInRole("Admin"))
                     {
                         <li class="nav-item">@Html.ActionLink("Õpetajad", "Index", "Opetajas", null, new { @class = "nav-link" })</li>
                         <li class="nav-item">@Html.ActionLink("Keelekursused", "Index", "Keelekursus", null, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("Koolitused", "Index", "Koolitus", null, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("Registreerimised", "Index", "Registreerimines", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Kõik koolitused", "Index", "Koolitus", null, new { @class = "nav-link" })</li>
 
                     }
                     @if (User.IsInRole("Opetaja"))
@@ -36,6 +40,8 @@
                         <li class="nav-item">
                             @Html.ActionLink("Minu koolitused", "MinuKoolitused", "Koolitus", null, new { @class = "nav-link" })
                         </li>
+
+                        <li>@Html.ActionLink("Kõik koolitused", "indexK", "Koolitus", new { area = "" }, new { @class = "nav-link" })</li>
                     }
 
                     @if (User.IsInRole("Opilane"))
@@ -43,7 +49,12 @@
                         <li class="nav-item">
                             @Html.ActionLink("Minu koolitused", "MinuKoolitused", "Registreerimines", null, new { @class = "nav-link" })
                         </li>
+                        <li>@Html.ActionLink("Registreerimines koolitus", "Create", "Registreerimines", new { area = "" }, new { @class = "nav-link" })</li>
+
+                        <li>@Html.ActionLink("Kõik koolitused", "indexK", "Koolitus", new { area = "" }, new { @class = "nav-link" })</li>
+
                     }
+
 
 
 
