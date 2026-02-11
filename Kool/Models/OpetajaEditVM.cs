@@ -2,8 +2,10 @@
 
 namespace Kool.Models
 {
-    public class OpetajaCreateVM
+    public class OpetajaEditVM
     {
+        public int Id { get; set; }
+
         [Required]
         public string Nimi { get; set; }
 
@@ -13,7 +15,9 @@ namespace Kool.Models
         [Required, EmailAddress]
         public string Email { get; set; }
 
-        [Required, DataType(DataType.Password)]
-        public string Password { get; set; }
+        [DataType(DataType.Password)]
+        public string NewPassword { get; set; }
+
+        public string ApplicationUserId { get; set; }
     }
 }

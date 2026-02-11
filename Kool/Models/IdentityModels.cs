@@ -1,4 +1,7 @@
-﻿using System.Data.Entity;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure.Annotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -6,14 +9,11 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Kool.Models
 {
-    // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
-            // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
-            // Add custom user claims here
             return userIdentity;
         }
     }
@@ -29,9 +29,30 @@ namespace Kool.Models
         {
             return new ApplicationDbContext();
         }
+
         public DbSet<Keelekursus> Keelekursused { get; set; }
         public DbSet<Opetaja> Opetajad { get; set; }
         public DbSet<Koolitus> Koolitused { get; set; }
         public DbSet<Registreerimine> Registreerimised { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Уникальная пара (KoolitusId, ApplicationUserId) => нельзя записаться на один курс дважды
+            modelBuilder.Entity<Registreerimine>()
+                .Property(r => r.KoolitusId)
+                .HasColumnAnnotation(
+                    IndexAnnotation.AnnotationName,
+                    new IndexAnnotation(new IndexAttribute("IX_UserKoolitus", 1) { IsUnique = true })
+                );
+
+            modelBuilder.Entity<Registreerimine>()
+                .Property(r => r.ApplicationUserId)
+                .HasColumnAnnotation(
+                    IndexAnnotation.AnnotationName,
+                    new IndexAnnotation(new IndexAttribute("IX_UserKoolitus", 2) { IsUnique = true })
+                );
+        }
     }
 }

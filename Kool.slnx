@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="../WebApplication1/WebApplication1.csproj" Id="bc00294d-d63a-4bb1-b8b1-b2d854b037ae" />
   <Project Path="Kool/Kool.csproj" Id="f4f96a66-cc00-4255-af59-2338eb72c7c7" />
 </Solution>

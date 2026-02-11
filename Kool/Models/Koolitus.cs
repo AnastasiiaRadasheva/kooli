@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Kool.Models
 {
@@ -28,5 +25,12 @@ namespace Kool.Models
         public virtual Opetaja Opetaja { get; set; }
 
         public virtual ICollection<Registreerimine> Registreerimised { get; set; } = new List<Registreerimine>();
+
+        // ---- NotMapped: удобство для UI ----
+        [NotMapped]
+        public int ApprovedCount => Registreerimised?.Count(r => r.Staatus == RegistreerimineStaatus.Approved) ?? 0;
+
+        [NotMapped]
+        public int FreePlaces => MaxOsalejaid - ApprovedCount;
     }
 }

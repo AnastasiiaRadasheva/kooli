@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,7 +14,6 @@ namespace Kool.Models
         [Required]
         public string ApplicationUserId { get; set; }
 
-        // navigation
         [ForeignKey(nameof(KoolitusId))]
         public virtual Koolitus Koolitus { get; set; }
 

@@ -14,7 +14,7 @@ namespace Kool.Models
         public string Nimi { get; set; }
         public string Kvalifikatsioon { get; set; }
         public string FotoPath { get; set; }
-
+        
         public string ApplicationUserId { get; set; }
 
         [ForeignKey(nameof(ApplicationUserId))]
@@ -22,4 +22,5 @@ namespace Kool.Models
 
         public virtual ICollection<Koolitus> Koolitused { get; set; } = new List<Koolitus>();
     }
+
 }

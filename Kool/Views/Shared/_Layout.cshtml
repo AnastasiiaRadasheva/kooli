@@ -31,7 +31,6 @@
                     @if (User.IsInRole("Admin"))
                     {
                         <li class="nav-item">@Html.ActionLink("Õpetajad", "Index", "Opetajas", null, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("Keelekursused", "Index", "Keelekursus", null, new { @class = "nav-link" })</li>
                         <li class="nav-item">@Html.ActionLink("Kõik koolitused", "Index", "Koolitus", null, new { @class = "nav-link" })</li>
 
                     }

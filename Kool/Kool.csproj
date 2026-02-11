@@ -190,13 +190,19 @@
     <Compile Include="Migrations\202601271112228_Regist.Designer.cs">
       <DependentUpon>202601271112228_Regist.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202602111342069_UpdateModel_Registr.cs" />
+    <Compile Include="Migrations\202602111342069_UpdateModel_Registr.Designer.cs">
+      <DependentUpon>202602111342069_UpdateModel_Registr.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Keelekursus.cs" />
     <Compile Include="Models\Koolitus.cs" />
+    <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Opetaja.cs" />
     <Compile Include="Models\OpetajaCreateVM.cs" />
+    <Compile Include="Models\OpetajaEditVM.cs" />
     <Compile Include="Models\Registreerimine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -297,7 +303,7 @@
     <Content Include="Views\Koolitus\indexK.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="App_data\" />
     <Folder Include="images\" />
   </ItemGroup>
   <ItemGroup>
@@ -336,6 +342,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202601271112228_Regist.resx">
       <DependentUpon>202601271112228_Regist.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202602111342069_UpdateModel_Registr.resx">
+      <DependentUpon>202602111342069_UpdateModel_Registr.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
