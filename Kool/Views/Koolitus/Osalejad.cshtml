@@ -1,0 +1,45 @@
+﻿@model List<Kool.Models.Registreerimine>
+
+@{
+    ViewBag.Title = "Osalejad";
+    int koolitusId = (int)ViewBag.KoolitusId;
+}
+
+<h2>Osalejad (KoolitusId: @koolitusId)</h2>
+
+@if (!Model.Any())
+{
+    <p>Praegu pole ühtegi kinnitatud osalejat.</p>
+}
+else
+{
+    <table class="table">
+        <tr>
+            <th>Nimi</th>
+            <th>Email</th>
+            <th></th>
+        </tr>
+
+        @foreach (var r in Model)
+        {
+            var email = r.ApplicationUser?.Email ?? "";
+            var nimi = r.ApplicationUser?.UserName ?? "";
+
+            <tr>
+                <td>@nimi</td>
+                <td>@email</td>
+                <td>
+                    @if (!string.IsNullOrWhiteSpace(email))
+                    {
+                        <a class="btn btn-primary btn-sm"
+                           href="mailto:@email?subject=@Uri.EscapeDataString("Koolitus")">
+                            Kirjuta
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@Html.ActionLink("Tagasi", "MinuKoolitused", "Koolitus", null, null)

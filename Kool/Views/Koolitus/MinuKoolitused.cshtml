@@ -2,6 +2,12 @@
 
 @{
     ViewBag.Title = "Minu koolitused";
+
+    bool isOpetaja = User.IsInRole("Opetaja");
+    bool isOpilane = User.IsInRole("Opilane");
+
+    var myStatuses = ViewBag.MyStatuses as Dictionary<int, Kool.Models.RegistreerimineStaatus>;
+    var approvedCounts = ViewBag.ApprovedCounts as Dictionary<int, int>;
 }
 
 <h2>Minu koolitused</h2>
@@ -20,10 +26,34 @@ else
             <th>Lõpp</th>
             <th>Hind</th>
             <th>Max osalejaid</th>
+
+            @if (isOpetaja)
+            {
+                <th>Osalejad</th>
+            }
+
+            @if (isOpilane)
+            {
+                <th>Staatus</th>
+            }
+
+            <th>Tegevused</th>
         </tr>
 
         @foreach (var k in Model)
         {
+            int approved = 0;
+            if (approvedCounts != null && approvedCounts.ContainsKey(k.Id))
+            {
+                approved = approvedCounts[k.Id];
+            }
+
+            Kool.Models.RegistreerimineStaatus? staatus = null;
+            if (myStatuses != null && myStatuses.ContainsKey(k.Id))
+            {
+                staatus = myStatuses[k.Id];
+            }
+
             <tr>
                 <td>@(k.Keelekursus?.Nimetus ?? ("Koolitus #" + k.Id))</td>
                 <td>@(k.Keelekursus != null ? (k.Keelekursus.Keel + " / " + k.Keelekursus.Tase) : "")</td>
@@ -31,6 +61,31 @@ else
                 <td>@k.LoppKuupaev.ToString("dd.MM.yyyy")</td>
                 <td>@k.Hind</td>
                 <td>@k.MaxOsalejaid</td>
+
+                @if (isOpetaja)
+                {
+                    <td>
+                        @Html.ActionLink("Vaata (" + approved + ")", "Osalejad", "Koolitus", new { id = k.Id }, null)
+                    </td>
+                }
+
+                @if (isOpilane)
+                {
+                    <td>
+                        @if (staatus.HasValue)
+                        {
+                            @staatus.Value.ToString()
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </td>
+                }
+
+                <td>
+                    @Html.ActionLink("Details", "Details", "Koolitus", new { id = k.Id }, null)
+                </td>
             </tr>
         }
     </table>

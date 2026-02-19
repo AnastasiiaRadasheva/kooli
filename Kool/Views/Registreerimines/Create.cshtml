@@ -17,7 +17,10 @@
     <p>Kas soovid registreeruda sellele koolitusele?</p>
 
     <button type="submit" class="btn btn-primary">Registreeru</button>
-    @Html.ActionLink("Tagasi", "Index", "Koolitus", null, new { @class = "btn btn-default" })
+    @Html.ActionLink("Tagasi", "indexK", "Koolitus", new { id = Model.KoolitusId }, null)
+
+
+
 }
 
 @section Scripts {

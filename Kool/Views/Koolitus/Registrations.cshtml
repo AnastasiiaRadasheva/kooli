@@ -1,0 +1,55 @@
+﻿@model List<Kool.Models.Registreerimine>
+
+@{
+    ViewBag.Title = "Registreerimised";
+    int koolitusId = (int)ViewBag.KoolitusId;
+}
+
+<h2>Pending registreerimised (KoolitusId: @koolitusId)</h2>
+
+@if (TempData["Msg"] != null)
+{
+    <div class="alert alert-info">@TempData["Msg"]</div>
+}
+
+@if (!Model.Any())
+{
+    <p>Praegu pole ühtegi pending registreerimist.</p>
+}
+else
+{
+    <table class="table">
+        <tr>
+            <th>Kasutaja</th>
+            <th>Email</th>
+            <th>Kuupäev</th>
+            <th>Tegevused</th>
+        </tr>
+
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@(r.ApplicationUser?.UserName)</td>
+                <td>@(r.ApplicationUser?.Email)</td>
+                <td>@r.CreatedAt</td>
+                <td>
+                    @using (Html.BeginForm("ApproveRegistration", "Koolitus", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("id", r.Id)
+                        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                    }
+
+                    @using (Html.BeginForm("RejectRegistration", "Koolitus", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("id", r.Id)
+                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@Html.ActionLink("Tagasi", "IndexK", "Koolitus", null, null)
