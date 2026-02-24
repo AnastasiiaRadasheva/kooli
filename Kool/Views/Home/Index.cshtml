@@ -1,33 +1,82 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Edu Samm Keelekool";
 }
 
 <main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
+    <section class="row py-5 mb-4 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px;">
+        <div class="col-md-8 px-5">
+            <h1 id="title" class="display-4 fw-bold">Tere tulemast keeltekooli "Edu Samm"!</h1>
+            <p class="lead">Meie missioon on avada uksi maailma läbi keeleõppe. Pakume kaasaegset õpikeskkonda ja parimaid õpetajaid.</p>
+            <hr class="my-4" style="border-top: 1px solid rgba(255,255,255,0.3)">
+
+            @if (!Request.IsAuthenticated)
+            {
+                <p>Alusta oma teekonda juba täna!</p>
+                <div class="d-grid gap-2 d-md-block">
+                    <a href="@Url.Action("Register", "Account")" class="btn btn-light btn-lg px-4 me-md-2">Registreeru õpilaseks</a>
+                    <a href="@Url.Action("IndexK", "Koolitus")" class="btn btn-outline-light btn-lg px-4">Vaata koolitusi</a>
+                </div>
+            }
+            else
+            {
+                <p class="fs-5">Oled sisse logitud. Head õppimist!</p>
+                <a href="@Url.Action("Keelekursused", "Index", "Keelekursus")" class="btn btn-light btn-lg px-4">Mine kursuste nimekirja</a>
+            }
+        </div>
     </section>
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    <div class="row g-4">
+        <section class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3 text-primary">
+                        <i class="glyphicon glyphicon-book" style="font-size: 2rem;"></i>
+                    </div>
+                    <h2 class="h4 card-title">Lai valik kursusi</h2>
+                    <p class="card-text text-muted">
+                        Pakume keeleõpet tasemetel <strong>A1 kuni C2</strong>. Olgu su eesmärk tööalane areng või hobi, meil on sulle sobiv grupp.
+                    </p>
+                    <p><span class="badge bg-success">Eesti keel</span> <span class="badge bg-info">Inglise keel</span> <span class="badge bg-danger">Saksa keel</span></p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a class="btn btn-outline-primary w-100" href="@Url.Action("Keelekursused", "Index", "Keelekursus")">Loe õppekavadest &raquo;</a>
+                </div>
+            </div>
         </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+
+        <section class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3 text-success">
+                        <i class="glyphicon glyphicon-user" style="font-size: 2rem;"></i>
+                    </div>
+                    <h2 class="h4 card-title">Kvalifitseeritud õpetajad</h2>
+                    <p class="card-text text-muted">
+                        Meie õpetajad on oma ala professionaalid, kellel on pikaajaline kogemus täiskasvanute koolitamisel.
+                    </p>
+                </div>
+            </div>
         </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+
+        <section class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3 text-warning">
+                        <i class="glyphicon glyphicon-time" style="font-size: 2rem;"></i>
+                    </div>
+                    <h2 class="h4 card-title">Paindlik õpe</h2>
+                    <p class="card-text text-muted">
+                        Kasutajasõbralik infosüsteem võimaldab sul mugavalt jälgida oma koolitusi, vaadata õppematerjale ja suhelda õpetajaga.
+                    </p>
+                </div>
+
+            </div>
         </section>
+    </div>
+
+    <div class="mt-5 p-4 bg-light rounded shadow-sm text-center">
+        <h3>Kas otsite koolitust ettevõttele?</h3>
+        <p class="text-muted">Koostame personaalse pakkumise vastavalt teie meeskonna vajadustele ja valdkonnale.</p>
+        <a href="mailto:info@edusamm.ee" class="btn btn-dark px-4">Võta ühendust</a>
     </div>
 </main>

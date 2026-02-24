@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Kool.Models;
+using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Web.Helpers;
 using System.Web.Mvc;
-using Kool.Models;
-using Microsoft.AspNet.Identity;
 
 namespace Kool.Controllers
 {
@@ -217,7 +218,88 @@ namespace Kool.Controllers
             return View(osalejad);
         }
 
+        public ActionResult Index1(string keel, string nimi)
+        {
+            var andmed = db.Koolitused.Include(k => k.Keelekursus).Include(k => k.Opetaja).AsQueryable();
 
+            if (!string.IsNullOrEmpty(keel)) andmed = andmed.Where(x => x.Keelekursus.Keel.Contains(keel));
+            if (!string.IsNullOrEmpty(nimi)) andmed = andmed.Where(x => x.Opetaja.Nimi.Contains(nimi));
+
+            // --- ÄRA UNUSTA SEDA OSA, et ootel soovid oleksid näha ---
+            ViewBag.PendingCounts = db.Registreerimised
+                .Where(r => r.Staatus == RegistreerimineStaatus.Pending)
+                .GroupBy(r => r.KoolitusId)
+                .ToDictionary(g => g.Key, g => g.Count());
+            // -------------------------------------------------------
+
+            return View("IndexK", andmed.ToList());
+            // Kui soovid, et see kuvaks tavalist nimekirja, siis kasuta "IndexK" või "Index"
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Opetaja")]
+        public ActionResult SendGroupEmail(int koolitusId, string subject, string message)
+        {
+            // 1. Находим всех одобренных учеников на этот курс
+            var recipients = db.Registreerimised
+                .Where(r => r.KoolitusId == koolitusId && r.Staatus == RegistreerimineStaatus.Approved)
+                .Select(r => r.ApplicationUser.Email)
+                .ToList();
+
+            if (recipients.Any())
+            {
+                try
+                {
+                    // Настройки (как в твоем примере)
+                    WebMail.SmtpServer = "smtp.gmail.com";
+                    WebMail.SmtpPort = 587;
+                    WebMail.EnableSsl = true;
+                    WebMail.UserName = "eha20082@gmail.com";
+                    WebMail.Password = "-";
+                    WebMail.From = "eha20082@gmail.com";
+
+                    // Отправляем через запятую (Bcc - скрытая копия, чтобы ученики не видели адреса друг друга)
+                    WebMail.Send(
+                        to: "eha20082@gmail.com", // Отправляем себе
+                        bcc: string.Join(",", recipients), // А всем ученикам в скрытую копию
+                        subject: subject,
+                        body: message
+                    );
+                    TempData["Msg"] = "Sõnum on saadetud kogu grupile!";
+                }
+                catch (Exception ex)
+                {
+                    TempData["Msg"] = "Viga: " + ex.Message;
+                }
+            }
+
+            return RedirectToAction("Osalejad", new { id = koolitusId });
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Opetaja")]
+        public ActionResult SendPersonalEmail(string email, string subject, string message, int returnId)
+        {
+            try
+            {
+                WebMail.SmtpServer = "smtp.gmail.com";
+                WebMail.SmtpPort = 587;
+                WebMail.EnableSsl = true;
+                WebMail.UserName = "eha20082@gmail.com";
+                WebMail.Password = "wjgpmsrqpjchfzhb";
+
+                WebMail.Send(to: email, subject: subject, body: message);
+                TempData["Msg"] = "Kiri on saadetud kasutajale " + email;
+            }
+            catch (Exception ex)
+            {
+                TempData["Msg"] = "Viga: " + ex.Message;
+            }
+
+            return RedirectToAction("Osalejad", new { id = returnId });
+        }
         // GET: Koolitus/Delete/5
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)

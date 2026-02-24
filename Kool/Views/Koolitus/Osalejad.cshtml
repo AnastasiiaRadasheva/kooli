@@ -1,45 +1,71 @@
-﻿@model List<Kool.Models.Registreerimine>
+﻿@model IEnumerable<Kool.Models.Registreerimine>
 
 @{
-    ViewBag.Title = "Osalejad";
-    int koolitusId = (int)ViewBag.KoolitusId;
+    ViewBag.Title = "Kursuse osalejad";
 }
 
-<h2>Osalejad (KoolitusId: @koolitusId)</h2>
+<h2>Osalejad kursusel</h2>
 
-@if (!Model.Any())
+@if (TempData["Msg"] != null)
 {
-    <p>Praegu pole ühtegi kinnitatud osalejat.</p>
+    <div class="alert alert-success">@TempData["Msg"]</div>
 }
-else
-{
-    <table class="table">
+
+<table class="table">
+    <tr>
+        <th>Kasutajanimi</th>
+        <th>E-mail</th>
+        <th>Staatus</th>
+        <th>Tegevused</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
         <tr>
-            <th>Nimi</th>
-            <th>Email</th>
-            <th></th>
+            <td>@item.ApplicationUser.UserName</td>
+            <td>@item.ApplicationUser.Email</td>
+            <td><span class="label label-success">@item.Staatus</span></td>
+            <td>
+                <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#personalMail-@item.Id">
+                    <i class="glyphicon glyphicon-user"></i> Saada isiklik kiri
+                </button>
+
+                <div class="modal fade" id="personalMail-@item.Id" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            @using (Html.BeginForm("SendPersonalEmail", "Koolitus", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="email" value="@item.ApplicationUser.Email" />
+                                <input type="hidden" name="returnId" value="@ViewBag.KoolitusId" />
+
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Kiri kasutajale: @item.ApplicationUser.UserName</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label>Teema:</label>
+                                        <input type="text" name="subject" class="form-control" value="Teade õpetajalt" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Sõnum:</label>
+                                        <textarea name="message" class="form-control" rows="4" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Sulge</button>
+                                    <button type="submit" class="btn btn-success">Saada kiri</button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </td>
         </tr>
+    }
+</table>
 
-        @foreach (var r in Model)
-        {
-            var email = r.ApplicationUser?.Email ?? "";
-            var nimi = r.ApplicationUser?.UserName ?? "";
-
-            <tr>
-                <td>@nimi</td>
-                <td>@email</td>
-                <td>
-                    @if (!string.IsNullOrWhiteSpace(email))
-                    {
-                        <a class="btn btn-primary btn-sm"
-                           href="mailto:@email?subject=@Uri.EscapeDataString("Koolitus")">
-                            Kirjuta
-                        </a>
-                    }
-                </td>
-            </tr>
-        }
-    </table>
-}
-
-@Html.ActionLink("Tagasi", "MinuKoolitused", "Koolitus", null, null)
+<div>
+    @Html.ActionLink("Tagasi nimekirja", "MinuKoolitused", null, new { @class = "btn btn-default" })
+</div>

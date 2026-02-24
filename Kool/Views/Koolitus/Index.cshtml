@@ -3,78 +3,107 @@
 @{
     ViewBag.Title = "Koolitused";
     var pendingCounts = ViewBag.PendingCounts as Dictionary<int, int>;
+    var approvedCounts = ViewBag.ApprovedCounts as Dictionary<int, int>;
 }
 
-<h2>Koolitused</h2>
-
-
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-
-<table class="table">
-    <tr>
-        <th>@Html.DisplayNameFor(model => model.KeelekursusId)</th>
-        <th>@Html.DisplayNameFor(model => model.OpetajaId)</th>
-        <th>@Html.DisplayNameFor(model => model.AlgusKuupaev)</th>
-        <th>@Html.DisplayNameFor(model => model.LoppKuupaev)</th>
-        <th>@Html.DisplayNameFor(model => model.Hind)</th>
-        <th>@Html.DisplayNameFor(model => model.MaxOsalejaid)</th>
-
-        @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-6">
+        <h2>Koolituste nimekiri</h2>
+    </div>
+    <div class="col-md-6 text-right">
+        @if (User.IsInRole("Admin"))
         {
-            <th>Заявки</th>
+            @Html.ActionLink("+ Lisa uus koolitus", "Create", null, new { @class = "btn btn-success" })
         }
+    </div>
+</div>
 
-        <th>Tegevused</th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
-        var cnt = 0;
-        if (pendingCounts != null && pendingCounts.ContainsKey(item.Id))
-        {
-            cnt = pendingCounts[item.Id];
-        }
-
-        <tr>
-            <td>@Html.DisplayFor(modelItem => item.KeelekursusId)</td>
-            <td>@Html.DisplayFor(modelItem => item.OpetajaId)</td>
-            <td>@Html.DisplayFor(modelItem => item.AlgusKuupaev)</td>
-            <td>@Html.DisplayFor(modelItem => item.LoppKuupaev)</td>
-            <td>@Html.DisplayFor(modelItem => item.Hind)</td>
-            <td>@Html.DisplayFor(modelItem => item.MaxOsalejaid)</td>
-
-            @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+<table class="table table-hover">
+    <thead>
+        <tr class="active">
+            <th>Kursus</th>
+            <th>Õpetaja</th>
+            <th>Algus</th>
+            <th>Lõpp</th>
+            <th>Hind</th>
+            @if (User.IsInRole("Admin"))
             {
-                <td>
-                    @Html.ActionLink("Заявки: " + cnt, "Registrations", "Koolitus", new { id = item.Id }, null)
-                </td>
+                <th>Ootel soovid</th>
+            }
+            <th class="text-right">Tegevused</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            int kinnitatud = 0;
+            if (approvedCounts != null && approvedCounts.ContainsKey(item.Id))
+            {
+                kinnitatud = approvedCounts[item.Id];
             }
 
+            int ootel = 0;
+            if (pendingCounts != null && pendingCounts.ContainsKey(item.Id))
+            {
+                ootel = pendingCounts[item.Id];
+            }
 
+            bool onTais = kinnitatud >= item.MaxOsalejaid;
 
-            <td>
-                @if (Request.IsAuthenticated && User.IsInRole("Opilane"))
+            <tr>
+                <td style="font-weight:bold; vertical-align:middle;">
+                    @(item.Keelekursus != null ? item.Keelekursus.Nimetus : "Kursus puudub")
+                </td>
+                <td style="vertical-align:middle;">
+                    @(item.Opetaja != null ? item.Opetaja.Nimi : "Määramata")
+                </td>
+                <td style="vertical-align:middle;">
+                    @item.AlgusKuupaev.ToString("dd.MM.yyyy")
+                </td>
+                <td style="vertical-align:middle;">
+                    @item.LoppKuupaev.ToString("dd.MM.yyyy")
+                </td>
+                <td style="vertical-align:middle;">
+                    <strong>@item.Hind €</strong>
+                </td>
+
+                @if (User.IsInRole("Admin"))
                 {
-                    @Html.ActionLink(
-                                  "Registreeru",
-                                  "Create",
-                                  "Registreerimines",
-                                  new { koolitusId = item.Id },
-                                  new { @class = "btn btn-primary btn-sm" }
-                              )
-                    <span> | </span>
+                    <td style="vertical-align:middle;">
+                        @if (ootel > 0)
+                        {
+                            <a href="@Url.Action("Registrations", "Koolitus", new { id = item.Id })" class="label label-warning" style="padding: 5px 8px; font-size: 0.9em;">
+                                @ootel uut soovi
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted small">0 ootel</span>
+                        }
+                    </td>
                 }
 
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
-                <span> | </span>
-                @Html.ActionLink("Details", "Details", new { id = item.Id })
-                <span> | </span>
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-            </td>
+                <td class="text-right" style="vertical-align:middle;">
+                    <div class="btn-group">
+                        @if (onTais)
+                        {
+                            <span class="label label-danger" style="margin-right:10px; display:inline-block; padding: 6px;">GRUPP TÄIS</span>
+                        }
+                        else if (Request.IsAuthenticated && User.IsInRole("Opilane"))
+                        {
+                            @Html.ActionLink("Registreeru", "Create", "Registreerimines", new { koolitusId = item.Id }, new { @class = "btn btn-primary btn-sm" })
+                        }
 
-        </tr>
-    }
+                        @Html.ActionLink("Detailid", "Details", new { id = item.Id }, new { @class = "btn btn-default btn-sm" })
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            @Html.ActionLink("Muuda", "Edit", new { id = item.Id }, new { @class = "btn btn-warning btn-sm" })
+                            @Html.ActionLink("Kustuta", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-sm" })
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
