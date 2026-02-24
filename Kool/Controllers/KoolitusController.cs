@@ -217,38 +217,6 @@ namespace Kool.Controllers
             return View(osalejad);
         }
 
-        // POST: Koolitus/ApproveRegistration
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public ActionResult ApproveRegistration(int id) // id = Registreerimine.Id
-        {
-            var reg = db.Registreerimised.FirstOrDefault(r => r.Id == id);
-            if (reg == null) return HttpNotFound();
-
-            reg.Staatus = RegistreerimineStaatus.Approved;
-            db.SaveChanges();
-
-            TempData["Msg"] = "Approved!";
-            return RedirectToAction("Registrations", new { id = reg.KoolitusId });
-        }
-
-        // POST: Koolitus/RejectRegistration
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public ActionResult RejectRegistration(int id) // id = Registreerimine.Id
-        {
-            var reg = db.Registreerimised.FirstOrDefault(r => r.Id == id);
-            if (reg == null) return HttpNotFound();
-
-            reg.Staatus = RegistreerimineStaatus.Rejected;
-            db.SaveChanges();
-
-            TempData["Msg"] = "Rejected!";
-            return RedirectToAction("Registrations", new { id = reg.KoolitusId });
-        }
-
 
         // GET: Koolitus/Delete/5
         [Authorize(Roles = "Admin")]

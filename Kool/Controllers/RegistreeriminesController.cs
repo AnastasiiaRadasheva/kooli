@@ -1,9 +1,10 @@
-﻿using System.Data.Entity;
+﻿using Kool.Models;
+using Microsoft.AspNet.Identity;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Web.Helpers;
 using System.Web.Mvc;
-using Kool.Models;
-using Microsoft.AspNet.Identity;
 
 namespace Kool.Controllers
 {
@@ -148,31 +149,63 @@ namespace Kool.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Opetaja")]
+
         public ActionResult Approve(int id)
         {
+            // 1. Получаем данные заявки вместе с данными пользователя и курса
             var reg = db.Registreerimised
                 .Include(r => r.Koolitus)
-                .Include(r => r.Koolitus.Registreerimised)
+                .Include(r => r.Koolitus.Keelekursus)
+                .Include(r => r.ApplicationUser)
                 .FirstOrDefault(r => r.Id == id);
 
             if (reg == null) return HttpNotFound();
 
-            // если уже обработано — просто назад
-            if (reg.Staatus != RegistreerimineStaatus.Pending)
-                return RedirectToAction("Pending");
-
-            // проверить места по Approved
-            int approved = reg.Koolitus.Registreerimised.Count(r => r.Staatus == RegistreerimineStaatus.Approved);
-            if (approved >= reg.Koolitus.MaxOsalejaid)
+            // Проверка, чтобы не одобрять уже одобренное
+            if (reg.Staatus == RegistreerimineStaatus.Pending)
             {
-                TempData["msg"] = "Ei saa kinnitada: grupp on täis.";
-                return RedirectToAction("Pending");
+                // 2. Меняем статус и сохраняем
+                reg.Staatus = RegistreerimineStaatus.Approved;
+                db.SaveChanges();
+
+                // 3. ОТПРАВКА ПОЧТЫ (как в твоем примере HomeController)
+                try
+                {
+                    // Настройки SMTP
+                    WebMail.SmtpServer = "smtp.gmail.com";
+                    WebMail.SmtpPort = 587;
+                    WebMail.EnableSsl = true;
+                    WebMail.UserName = "eha20082@gmail.com";
+                    WebMail.Password = "-";
+                    WebMail.From = "eha20082@gmail.com";
+
+                    // Содержимое письма
+                    string sisu = $@"
+                <h2>Tere, {reg.ApplicationUser.UserName}!</h2>
+                <p>Teid on vastu võetud kursusele: <b>{reg.Koolitus.Keelekursus.Nimetus}</b>.</p>
+                <p>Kursus algab: {reg.Koolitus.AlgusKuupaev.ToShortDateString()}</p>
+                <br/>
+                <p>Parimate soovidega, Kooli administratsioon</p>";
+
+                    // Отправка
+                    WebMail.Send(
+                        to: reg.ApplicationUser.Email,
+                        subject: "Kinnitus: " + reg.Koolitus.Keelekursus.Nimetus,
+                        body: sisu,
+                        isBodyHtml: true
+                    );
+
+                    TempData["msg"] = "Kasutaja on kinnitatud ja e-kiri saadetud!";
+                }
+                catch (System.Exception ex)
+                {
+                    // Если почта не ушла, выводим ошибку, но регистрация уже сохранена как Approved
+                    TempData["msg"] = "Kinnitatud, kuid e-kirja viga: " + ex.Message;
+                }
             }
 
-            reg.Staatus = RegistreerimineStaatus.Approved;
-            db.SaveChanges();
-
-            return RedirectToAction("Pending");
+            // Возврат на страницу регистрации конкретного курса
+            return RedirectToAction("Registrations", "Koolitus", new { id = reg.KoolitusId });
         }
 
         // Admin/Opetaja: отклонить
@@ -190,7 +223,8 @@ namespace Kool.Controllers
                 db.SaveChanges();
             }
 
-            return RedirectToAction("Pending");
+            // Направляем обратно в KoolitusController к методу Registrations
+            return RedirectToAction("Registrations", "Koolitus", new { id = reg.KoolitusId });
         }
 
         // Admin: Edit (оставим, но лучше пользоваться Approve/Reject)

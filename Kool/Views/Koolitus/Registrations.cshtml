@@ -33,19 +33,21 @@ else
                 <td>@(r.ApplicationUser?.Email)</td>
                 <td>@r.CreatedAt</td>
                 <td>
-                    @using (Html.BeginForm("ApproveRegistration", "Koolitus", FormMethod.Post))
+                <td>
+                <td>
+                    @using (Html.BeginForm("Approve", "Registreerimines", new { id = r.Id }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
-                        @Html.Hidden("id", r.Id)
                         <button type="submit" class="btn btn-success btn-sm">Approve</button>
                     }
 
-                    @using (Html.BeginForm("RejectRegistration", "Koolitus", FormMethod.Post))
+                    @using (Html.BeginForm("Reject", "Registreerimines", new { id = r.Id }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
-                        @Html.Hidden("id", r.Id)
                         <button type="submit" class="btn btn-danger btn-sm">Reject</button>
                     }
+                </td>
+                </td>
                 </td>
             </tr>
         }
