@@ -302,6 +302,8 @@
     <Content Include="Views\Koolitus\indexK.cshtml" />
     <Content Include="Views\Koolitus\Registrations.cshtml" />
     <Content Include="Views\Koolitus\Osalejad.cshtml" />
+    <Content Include="Views\Koolitus\GroupEmail.cshtml" />
+    <Content Include="Views\Opetajas\Koolitused.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

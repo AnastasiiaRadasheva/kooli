@@ -43,6 +43,11 @@
     <tbody>
         @foreach (var item in Model)
         {
+            int approved = 0;
+            if (approvedCounts != null && approvedCounts.ContainsKey(item.Id))
+            {
+                approved = approvedCounts[item.Id];
+            }
             int kinnitatud = 0;
             if (approvedCounts != null && approvedCounts.ContainsKey(item.Id))
             {
@@ -105,12 +110,16 @@
 
                         @if (User.IsInRole("Admin"))
                         {
+                            @Html.ActionLink("Vaata (" + approved + ")", "Osalejad", "Koolitus",
+                                new { id = item.Id },
+                                new { @class = "btn btn-info btn-sm" })
+
                             @Html.ActionLink("Muuda", "Edit", new { id = item.Id }, new { @class = "btn btn-warning btn-sm" })
                             @Html.ActionLink("Kustuta", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-sm" })
                         }
                     </div>
-                </td>
-            </tr>
+                        </td>
+                    </tr>
         }
     </tbody>
 </table>

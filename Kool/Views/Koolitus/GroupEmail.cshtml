@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Saada kiri grupile";
+}
+
+<h2>Saada kiri grupile</h2>
+
+@using (Html.BeginForm("SendGroupEmail", "Koolitus", FormMethod.Post))
+{
+    <input type="hidden" name="koolitusId" value="@ViewBag.KoolitusId" />
+
+    <div class="form-group">
+        <label>Teema</label>
+        <input type="text" name="subject" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Sõnum</label>
+        <textarea name="message" class="form-control" rows="6" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Saada</button>
+    <a href="@Url.Action("Osalejad", new { id = ViewBag.KoolitusId })"
+       class="btn btn-default">Tagasi</a>
+}

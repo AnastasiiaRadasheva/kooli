@@ -1,0 +1,35 @@
+﻿@model Kool.Models.Opetaja
+
+<h2>Koolitused – @Model.Nimi</h2>
+
+@if (!Model.Koolitused.Any())
+{
+    <p>Õpetajal ei ole veel koolitusi.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <tr>
+            <th>Kursus</th>
+            <th>Keel</th>
+            <th>Algus</th>
+            <th>Lõpp</th>
+            <th>Hind</th>
+        </tr>
+
+        @foreach (var k in Model.Koolitused)
+        {
+            <tr>
+                <td>@k.Keelekursus?.Nimetus</td>
+                <td>@k.Keelekursus?.Keel / @k.Keelekursus?.Tase</td>
+                <td>@k.AlgusKuupaev.ToString("dd.MM.yyyy")</td>
+                <td>@k.LoppKuupaev.ToString("dd.MM.yyyy")</td>
+                <td>@k.Hind €</td>
+            </tr>
+        }
+    </table>
+}
+
+<p>
+    @Html.ActionLink("Tagasi õpetajate nimekirja", "Index")
+</p>

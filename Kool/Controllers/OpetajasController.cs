@@ -13,7 +13,19 @@ namespace Kool.Controllers
         private readonly ApplicationDbContext db;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
+        [Authorize(Roles = "Admin")]
+        public ActionResult Koolitused(int id)
+        {
+            var opetaja = db.Opetajad
+                .Include(o => o.Koolitused)
+                .Include(o => o.Koolitused.Select(k => k.Keelekursus))
+                .FirstOrDefault(o => o.Id == id);
 
+            if (opetaja == null)
+                return HttpNotFound();
+
+            return View(opetaja);
+        }
         public OpetajasController()
         {
             db = new ApplicationDbContext();

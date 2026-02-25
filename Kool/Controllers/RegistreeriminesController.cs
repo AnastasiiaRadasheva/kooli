@@ -159,7 +159,7 @@ namespace Kool.Controllers
                     WebMail.SmtpPort = 587;
                     WebMail.EnableSsl = true;
                     WebMail.UserName = "eha20082@gmail.com";
-                    WebMail.Password = "-";
+                    WebMail.Password = "iakc rgui tmxd erwf";
                     WebMail.From = "eha20082@gmail.com";
 
                     string sisu = $@"
