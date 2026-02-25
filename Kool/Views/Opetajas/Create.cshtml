@@ -6,7 +6,7 @@
 
 <h2>Loomine</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
@@ -16,50 +16,47 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="form-group">
-            @Html.LabelFor(m => m.Nimi, "Nimi", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(m => m.Nimi, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(m => m.Nimi, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.Nimi, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.Kvalifikatsioon, "Kvalifikatsioon", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(m => m.Kvalifikatsioon, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(m => m.Kvalifikatsioon, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.Kvalifikatsioon, "", new { @class = "text-danger" })
             </div>
         </div>
 
+        <!-- FOTO -->
         <div class="form-group">
-            @Html.LabelFor(m => m.FotoPath, "Foto (tee failini)", htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2">Foto</label>
             <div class="col-md-10">
-                @Html.EditorFor(m => m.FotoPath, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.FotoPath, "", new { @class = "text-danger" })
+                <input type="file" name="foto" class="form-control" accept="image/*" />
+                <span class="text-muted small">JPG, PNG</span>
             </div>
         </div>
 
         <hr />
 
         <div class="form-group">
-            @Html.LabelFor(m => m.Email, "E-post", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(m => m.Email, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.Password, "Parool", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(m => m.Password, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Loo" class="btn btn-default" />
+                <input type="submit" value="Loo" class="btn btn-primary" />
             </div>
         </div>
     </div>
@@ -68,7 +65,3 @@
 <div>
     @Html.ActionLink("Tagasi nimekirja", "Index")
 </div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}

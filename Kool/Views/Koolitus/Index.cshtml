@@ -106,8 +106,6 @@
                             @Html.ActionLink("Registreeru", "Create", "Registreerimines", new { koolitusId = item.Id }, new { @class = "btn btn-primary btn-sm" })
                         }
 
-                        @Html.ActionLink("Detailid", "Details", new { id = item.Id }, new { @class = "btn btn-default btn-sm" })
-
                         @if (User.IsInRole("Admin"))
                         {
                             @Html.ActionLink("Vaata (" + approved + ")", "Osalejad", "Koolitus",

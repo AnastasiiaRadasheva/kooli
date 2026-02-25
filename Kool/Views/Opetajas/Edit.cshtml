@@ -10,63 +10,72 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Õpetaja</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<div class="form-horizontal">
+    <h4>Õpetaja</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        @Html.HiddenFor(m => m.Id)
-        @Html.HiddenFor(m => m.ApplicationUserId)
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.ApplicationUserId)
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.Nimi, "Nimi", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.Nimi, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.Nimi, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(m => m.Kvalifikatsioon, "Kvalifikatsioon", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.Kvalifikatsioon, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.Kvalifikatsioon, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(m => m.FotoPath, "Foto (tee failini)", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.FotoPath, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.FotoPath, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <hr />
-
-        <div class="form-group">
-            @Html.LabelFor(m => m.Email, "E-post", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(m => m.NewPassword, "Uus parool", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control" })
-                <span class="help-block">Jäta tühjaks, kui ei soovi parooli muuta.</span>
-                @Html.ValidationMessageFor(m => m.NewPassword, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Salvesta" class="btn btn-default" />
-            </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Nimi, "Nimi", new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.Nimi, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.Nimi, "", new { @class = "text-danger" })
         </div>
     </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Kvalifikatsioon, "Kvalifikatsioon", new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.Kvalifikatsioon, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.Kvalifikatsioon, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Praegune foto</label>
+        <div class="col-md-10">
+            <img src="@Url.Content("~/Content/uploads/opetajad/" +
+                (string.IsNullOrEmpty(Model.FotoPath) ? "default.png" : Model.FotoPath))"
+                 style="width:80px;height:80px;object-fit:cover;border-radius:50%;margin-bottom:10px;" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Uus foto</label>
+        <div class="col-md-10">
+            <input type="file" name="foto" class="form-control" accept="image/*" />
+            <span class="text-muted small">JPG, PNG</span>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Email, "E-post", new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.NewPassword, "Uus parool", new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control" })
+            <span class="help-block">Jäta tühjaks, kui ei soovi parooli muuta.</span>
+            @Html.ValidationMessageFor(m => m.NewPassword, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Salvesta" class="btn btn-default" />
+        </div>
+    </div>
+</div>
 }
 
 <div>

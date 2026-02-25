@@ -307,6 +307,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\uploads\opetajad\" />
     <Folder Include="images\" />
   </ItemGroup>
   <ItemGroup>
