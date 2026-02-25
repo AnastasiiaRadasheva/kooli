@@ -14,15 +14,11 @@ namespace Kool.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // -----------------------------
-        // ADMIN: список курсов (Index)
-        // -----------------------------
         [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             var list = db.Koolitused.ToList();
 
-            // pending заявки по каждому курсу
             var pendingCounts = db.Registreerimised
                 .Where(r => r.Staatus == RegistreerimineStaatus.Pending)
                 .GroupBy(r => r.KoolitusId)
@@ -35,9 +31,6 @@ namespace Kool.Controllers
             return View(list);
         }
 
-        // --------------------------------------
-        // PUBLIC: список курсов (IndexK) - у тебя
-        // --------------------------------------
         [AllowAnonymous]
         public ActionResult IndexK()
         {
@@ -46,7 +39,6 @@ namespace Kool.Controllers
                 .Include(k => k.Opetaja)
                 .ToList();
 
-            // pending заявки по каждому курсу (нужно для "Заявки: X" у Admin)
             var pendingCounts = db.Registreerimised
                 .Where(r => r.Staatus == RegistreerimineStaatus.Pending)
                 .GroupBy(r => r.KoolitusId)
@@ -59,7 +51,6 @@ namespace Kool.Controllers
             return View("IndexK", list);
         }
 
-        // GET: Koolitus/Details/5
         [AllowAnonymous]
         public ActionResult Details(int? id)
         {
@@ -71,11 +62,8 @@ namespace Kool.Controllers
             return View(koolitus);
         }
 
-        // ---------------------------------------
-        // ADMIN: список желающих на курс (Pending)
-        // ---------------------------------------
         [Authorize(Roles = "Admin")]
-        public ActionResult Registrations(int id) // id = KoolitusId
+        public ActionResult Registrations(int id) 
         {
             var regs = db.Registreerimised
                 .Include(r => r.ApplicationUser)
@@ -84,12 +72,9 @@ namespace Kool.Controllers
                 .ToList();
 
             ViewBag.KoolitusId = id;
-            return View(regs); // Views/Koolitus/Registrations.cshtml
+            return View(regs);
         }
 
-        // ---------------------------------------
-        // USER: отправить заявку на курс (Pending)
-        // ---------------------------------------
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -120,7 +105,6 @@ namespace Kool.Controllers
             return RedirectToAction("Details", new { id = koolitusId });
         }
 
-        // GET: Koolitus/Create
         [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
@@ -136,7 +120,6 @@ namespace Kool.Controllers
                 .Where(k => k.KeelekursusId == id)
                 .ToList();
 
-            // чтобы "Заявки: X" тоже работало, если Admin зайдет сюда
             var pendingCounts = db.Registreerimised
                 .Where(r => r.Staatus == RegistreerimineStaatus.Pending)
                 .GroupBy(r => r.KoolitusId)
@@ -149,7 +132,6 @@ namespace Kool.Controllers
             return View("IndexK", list);
         }
 
-        // POST: Koolitus/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -165,7 +147,6 @@ namespace Kool.Controllers
             return View(koolitus);
         }
 
-        // GET: Koolitus/Edit/5
         [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
@@ -177,7 +158,6 @@ namespace Kool.Controllers
             return View(koolitus);
         }
 
-        // POST: Koolitus/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -193,11 +173,10 @@ namespace Kool.Controllers
         }
 
         [Authorize(Roles = "Opetaja")]
-        public ActionResult Osalejad(int id) // id = KoolitusId
+        public ActionResult Osalejad(int id) 
         {
             string userId = User.Identity.GetUserId();
 
-            // Проверяем, что этот курс реально принадлежит этому учителю
             var koolitus = db.Koolitused
                 .Include(k => k.Opetaja)
                 .FirstOrDefault(k => k.Id == id);
@@ -207,7 +186,6 @@ namespace Kool.Controllers
             if (koolitus.Opetaja == null || koolitus.Opetaja.ApplicationUserId != userId)
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
 
-            // Берем только Approved участников
             var osalejad = db.Registreerimised
                 .Include(r => r.ApplicationUser)
                 .Where(r => r.KoolitusId == id && r.Staatus == RegistreerimineStaatus.Approved)
@@ -225,22 +203,18 @@ namespace Kool.Controllers
             if (!string.IsNullOrEmpty(keel)) andmed = andmed.Where(x => x.Keelekursus.Keel.Contains(keel));
             if (!string.IsNullOrEmpty(nimi)) andmed = andmed.Where(x => x.Opetaja.Nimi.Contains(nimi));
 
-            // --- ÄRA UNUSTA SEDA OSA, et ootel soovid oleksid näha ---
             ViewBag.PendingCounts = db.Registreerimised
                 .Where(r => r.Staatus == RegistreerimineStaatus.Pending)
                 .GroupBy(r => r.KoolitusId)
                 .ToDictionary(g => g.Key, g => g.Count());
-            // -------------------------------------------------------
 
             return View("IndexK", andmed.ToList());
-            // Kui soovid, et see kuvaks tavalist nimekirja, siis kasuta "IndexK" või "Index"
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Opetaja")]
         public ActionResult SendGroupEmail(int koolitusId, string subject, string message)
         {
-            // 1. Находим всех одобренных учеников на этот курс
             var recipients = db.Registreerimised
                 .Where(r => r.KoolitusId == koolitusId && r.Staatus == RegistreerimineStaatus.Approved)
                 .Select(r => r.ApplicationUser.Email)
@@ -250,18 +224,15 @@ namespace Kool.Controllers
             {
                 try
                 {
-                    // Настройки (как в твоем примере)
                     WebMail.SmtpServer = "smtp.gmail.com";
                     WebMail.SmtpPort = 587;
                     WebMail.EnableSsl = true;
                     WebMail.UserName = "eha20082@gmail.com";
                     WebMail.Password = "-";
                     WebMail.From = "eha20082@gmail.com";
-
-                    // Отправляем через запятую (Bcc - скрытая копия, чтобы ученики не видели адреса друг друга)
                     WebMail.Send(
-                        to: "eha20082@gmail.com", // Отправляем себе
-                        bcc: string.Join(",", recipients), // А всем ученикам в скрытую копию
+                        to: "eha20082@gmail.com", 
+                        bcc: string.Join(",", recipients), 
                         subject: subject,
                         body: message
                     );
@@ -300,7 +271,6 @@ namespace Kool.Controllers
 
             return RedirectToAction("Osalejad", new { id = returnId });
         }
-        // GET: Koolitus/Delete/5
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
@@ -312,7 +282,6 @@ namespace Kool.Controllers
             return View(koolitus);
         }
 
-        // POST: Koolitus/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -332,7 +301,6 @@ namespace Kool.Controllers
         {
             string userId = User.Identity.GetUserId();
 
-            // --- Õpetaja: показываем курсы учителя ---
             if (User.IsInRole("Opetaja"))
             {
                 var minu = db.Koolitused
@@ -341,8 +309,6 @@ namespace Kool.Controllers
                     .Where(k => k.Opetaja.ApplicationUserId == userId)
                     .OrderByDescending(k => k.AlgusKuupaev)
                     .ToList();
-
-                // (не обязательно, но удобно) сколько Approved участников на каждый курс
                 var approvedCounts = db.Registreerimised
                     .Where(r => r.Staatus == RegistreerimineStaatus.Approved)
                     .GroupBy(r => r.KoolitusId)
@@ -355,7 +321,6 @@ namespace Kool.Controllers
                 return View(minu);
             }
 
-            // --- Õpilane: показываем курсы, куда ученик регался ---
             var koolitusIds = db.Registreerimised
                 .Where(r => r.ApplicationUserId == userId)
                 .Select(r => r.KoolitusId)
@@ -368,9 +333,6 @@ namespace Kool.Controllers
                 .Where(k => koolitusIds.Contains(k.Id))
                 .OrderByDescending(k => k.AlgusKuupaev)
                 .ToList();
-
-            // статус по каждому курсу (если вдруг несколько записей — берем самый важный)
-            // Priority: Approved > Pending > Rejected
             var statuses = db.Registreerimised
                 .Where(r => r.ApplicationUserId == userId)
                 .ToList()

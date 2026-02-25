@@ -86,7 +86,7 @@ else
 
                 <td>
                     <div class="btn-group">
-                        @Html.ActionLink("Details", "Details", "Koolitus", new { id = k.Id }, new { @class = "btn btn-sm btn-default" })
+                        @Html.ActionLink("Üksikasjad", "Details", "Koolitus", new { id = k.Id }, new { @class = "btn btn-sm btn-default" })
 
                         @if (isOpetaja && approved > 0)
                         {
@@ -134,7 +134,8 @@ else
             </tr>
         }
     </table>
-}Razor CSHTML
+}
+
 @section scripts {
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

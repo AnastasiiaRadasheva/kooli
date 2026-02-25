@@ -1,10 +1,10 @@
 ﻿@model Kool.Models.Keelekursus
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Üksikasjad";
 }
 
-<h2>Details</h2>
+<h2>Üksikasjad</h2>
 
 <div>
     <h4>Keelekursus</h4>
@@ -45,6 +45,6 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Muuda", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Tagasi nimekirja", "Index")
 </p>

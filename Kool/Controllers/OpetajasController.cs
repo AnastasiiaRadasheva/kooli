@@ -27,13 +27,11 @@ namespace Kool.Controllers
             );
         }
 
-        // GET: Opetajas  (ВСЕМ можно смотреть)
         public ActionResult Index()
         {
             return View(db.Opetajad.ToList());
         }
 
-        // GET: Opetajas/Details/5  (ВСЕМ можно смотреть)
         public ActionResult Details(int? id)
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -44,14 +42,12 @@ namespace Kool.Controllers
             return View(opetaja);
         }
 
-        // GET: Opetajas/Create  (ТОЛЬКО Admin)
         [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             return View(new OpetajaCreateVM());
         }
 
-        // POST: Opetajas/Create  (ТОЛЬКО Admin)
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -59,7 +55,6 @@ namespace Kool.Controllers
         {
             if (!ModelState.IsValid) return View(vm);
 
-            // 1) создаём пользователя Identity
             var user = new ApplicationUser
             {
                 UserName = vm.Email,
@@ -76,13 +71,11 @@ namespace Kool.Controllers
                 return View(vm);
             }
 
-            // 2) выдаём роль Opetaja
             if (!roleManager.RoleExists("Opetaja"))
                 roleManager.Create(new IdentityRole("Opetaja"));
 
             userManager.AddToRole(user.Id, "Opetaja");
 
-            // 3) создаём профиль Opetaja и связываем с ApplicationUser
             var opetaja = new Opetaja
             {
                 Nimi = vm.Nimi,
@@ -97,7 +90,6 @@ namespace Kool.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Opetajas/Edit/5  (ТОЛЬКО Admin)
         [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
@@ -121,8 +113,6 @@ namespace Kool.Controllers
 
             return View(vm);
         }
-
-        // POST: Opetajas/Edit/5  (ТОЛЬКО Admin)
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -136,15 +126,12 @@ namespace Kool.Controllers
             var user = userManager.FindById(vm.ApplicationUserId);
             if (user == null) return HttpNotFound();
 
-            // 1) обновляем данные учителя
             opetaja.Nimi = vm.Nimi;
             opetaja.Kvalifikatsioon = vm.Kvalifikatsioon;
             opetaja.FotoPath = vm.FotoPath;
 
-            // 2) обновляем email
             if (user.Email != vm.Email)
             {
-                // (простая проверка, чтобы не было дубля)
                 var exists = db.Users.Any(u => u.Email == vm.Email && u.Id != user.Id);
                 if (exists)
                 {
@@ -156,7 +143,6 @@ namespace Kool.Controllers
                 user.UserName = vm.Email;
             }
 
-            // 3) обновляем пароль (если ввели новый)
             if (!string.IsNullOrWhiteSpace(vm.NewPassword))
             {
                 var token = userManager.GeneratePasswordResetToken(user.Id);
@@ -175,7 +161,6 @@ namespace Kool.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Opetajas/Delete/5  (ТОЛЬКО Admin)
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
@@ -187,7 +172,6 @@ namespace Kool.Controllers
             return View(opetaja);
         }
 
-        // POST: Opetajas/Delete/5  (ТОЛЬКО Admin)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -196,12 +180,6 @@ namespace Kool.Controllers
             var opetaja = db.Opetajad.Find(id);
             if (opetaja == null) return HttpNotFound();
 
-            // Если хочешь удалять и пользователя — раскомментируй:
-            // if (!string.IsNullOrEmpty(opetaja.ApplicationUserId))
-            // {
-            //     var user = userManager.FindById(opetaja.ApplicationUserId);
-            //     if (user != null) userManager.Delete(user);
-            // }
 
             db.Opetajad.Remove(opetaja);
             db.SaveChanges();

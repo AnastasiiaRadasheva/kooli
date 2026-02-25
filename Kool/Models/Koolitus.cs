@@ -26,7 +26,6 @@ namespace Kool.Models
 
         public virtual ICollection<Registreerimine> Registreerimised { get; set; } = new List<Registreerimine>();
 
-        // ---- NotMapped: удобство для UI ----
         [NotMapped]
         public int ApprovedCount => Registreerimised?.Count(r => r.Staatus == RegistreerimineStaatus.Approved) ?? 0;
 

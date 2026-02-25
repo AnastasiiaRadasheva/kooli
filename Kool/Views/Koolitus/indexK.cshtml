@@ -10,12 +10,13 @@
     <div class="col-md-6">
         <h2>Koolituste nimekiri</h2>
     </div>
-    <div class="col-md-6 text-right">
-        @if (User.IsInRole("Admin"))
-        {
-            @Html.ActionLink("+ Lisa uus koolitus", "Create", null, new { @class = "btn btn-success" })
-        }
-    </div>
+</div>
+
+<div class="col-md-6 text-right">
+    @if (User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("+ Lisa uus koolitus", "Create", null, new { @class = "btn btn-success" })
+    }
 </div>
 <div class="well">
     <form action="@Url.Action("Index1", "Koolitus")" method="get" class="form-inline">

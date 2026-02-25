@@ -5,7 +5,7 @@
     int koolitusId = (int)ViewBag.KoolitusId;
 }
 
-<h2>Pending registreerimised (KoolitusId: @koolitusId)</h2>
+<h2>Ootel registreerimised (Koolitus ID: @koolitusId)</h2>
 
 @if (TempData["Msg"] != null)
 {
@@ -14,14 +14,14 @@
 
 @if (!Model.Any())
 {
-    <p>Praegu pole ühtegi pending registreerimist.</p>
+    <p>Praegu ei ole ühtegi ootel registreerimist.</p>
 }
 else
 {
     <table class="table">
         <tr>
             <th>Kasutaja</th>
-            <th>Email</th>
+            <th>E-post</th>
             <th>Kuupäev</th>
             <th>Tegevused</th>
         </tr>
@@ -38,13 +38,13 @@ else
                     @using (Html.BeginForm("Approve", "Registreerimines", new { id = r.Id }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                        <button type="submit" class="btn btn-success btn-sm">Kinnita</button>
                     }
 
                     @using (Html.BeginForm("Reject", "Registreerimines", new { id = r.Id }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                        <button type="submit" class="btn btn-danger btn-sm">Keeldu</button>
                     }
                 </td>
                 </td>

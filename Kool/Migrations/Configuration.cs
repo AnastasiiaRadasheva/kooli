@@ -20,7 +20,6 @@
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
 
-            // ===== 1) ROLLID =====
             string[] rollid = { "Admin", "Opetaja", "Opilane" };
             foreach (var roll in rollid)
             {
@@ -30,20 +29,18 @@
                 }
             }
 
-            // ===== 2) ADMIN kasutaja =====
             var adminEmail = "admin@kool.ee";
             var admin = context.Users.FirstOrDefault(u => u.Email == adminEmail);
 
             if (admin == null)
             {
                 admin = new ApplicationUser { UserName = adminEmail, Email = adminEmail };
-                userManager.Create(admin, "Admin123!"); // пароли можно поменять
+                userManager.Create(admin, "Admin123!"); 
             }
 
             if (!userManager.IsInRole(admin.Id, "Admin"))
                 userManager.AddToRole(admin.Id, "Admin");
 
-            // ===== 3) OPETAJA kasutaja + Opetaja profiil =====
             var opetajaEmail = "opetaja@kool.ee";
             var opetajaUser = context.Users.FirstOrDefault(u => u.Email == opetajaEmail);
 
@@ -55,8 +52,6 @@
 
             if (!userManager.IsInRole(opetajaUser.Id, "Opetaja"))
                 userManager.AddToRole(opetajaUser.Id, "Opetaja");
-
-            // Opetaja profiil (hübriidne seos ApplicationUserId kaudu)
             var opetajaProfiil = context.Opetajad.FirstOrDefault(o => o.ApplicationUserId == opetajaUser.Id);
             if (opetajaProfiil == null)
             {
@@ -70,7 +65,6 @@
                 context.SaveChanges();
             }
 
-            // ===== 4) OPILANE kasutaja =====
             var opilaneEmail = "opilane@kool.ee";
             var opilaneUser = context.Users.FirstOrDefault(u => u.Email == opilaneEmail);
 
@@ -83,8 +77,6 @@
             if (!userManager.IsInRole(opilaneUser.Id, "Opilane"))
                 userManager.AddToRole(opilaneUser.Id, "Opilane");
 
-            // ===== 5) (OPTIONAL) test-andmed: Keelekursus + Koolitus =====
-            // Чтобы сразу было что показать на списках
             if (!context.Keelekursused.Any(k => k.Nimetus == "Saksa keel algajatele"))
             {
                 context.Keelekursused.Add(new Keelekursus

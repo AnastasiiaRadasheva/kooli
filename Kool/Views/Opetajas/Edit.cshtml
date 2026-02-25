@@ -1,17 +1,17 @@
 ﻿@model Kool.Models.OpetajaEditVM
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Muutmine";
 }
 
-<h2>Edit</h2>
+<h2>Muutmine</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>Opetaja</h4>
+        <h4>Õpetaja</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
@@ -19,7 +19,7 @@
         @Html.HiddenFor(m => m.ApplicationUserId)
 
         <div class="form-group">
-            @Html.LabelFor(m => m.Nimi, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(m => m.Nimi, "Nimi", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(m => m.Nimi, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(m => m.Nimi, "", new { @class = "text-danger" })
@@ -27,7 +27,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.Kvalifikatsioon, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(m => m.Kvalifikatsioon, "Kvalifikatsioon", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(m => m.Kvalifikatsioon, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(m => m.Kvalifikatsioon, "", new { @class = "text-danger" })
@@ -35,7 +35,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.FotoPath, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(m => m.FotoPath, "Foto (tee failini)", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(m => m.FotoPath, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(m => m.FotoPath, "", new { @class = "text-danger" })
@@ -45,7 +45,7 @@
         <hr />
 
         <div class="form-group">
-            @Html.LabelFor(m => m.Email, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(m => m.Email, "E-post", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
@@ -53,7 +53,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.NewPassword, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(m => m.NewPassword, "Uus parool", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control" })
                 <span class="help-block">Jäta tühjaks, kui ei soovi parooli muuta.</span>
@@ -63,14 +63,14 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Salvesta" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Tagasi nimekirja", "Index")
 </div>
 
 @section Scripts {

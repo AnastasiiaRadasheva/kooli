@@ -12,7 +12,6 @@ namespace Kool.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // Admin: все заявки
         [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
@@ -26,7 +25,6 @@ namespace Kool.Controllers
             return View(all);
         }
 
-        // Admin/Opetaja: детали заявки
         [Authorize(Roles = "Admin,Opetaja")]
         public ActionResult Details(int? id)
         {
@@ -43,7 +41,6 @@ namespace Kool.Controllers
             return View(reg);
         }
 
-        // Opilane: форма подтверждения "хочу записаться"
         [Authorize(Roles = "Opilane")]
         public ActionResult Create(int? koolitusId)
         {
@@ -56,7 +53,6 @@ namespace Kool.Controllers
 
             if (koolitus == null) return HttpNotFound();
 
-            // только проверка мест по APPROVED
             int approved = koolitus.Registreerimised.Count(r => r.Staatus == RegistreerimineStaatus.Approved);
             if (approved >= koolitus.MaxOsalejaid)
             {
@@ -67,7 +63,6 @@ namespace Kool.Controllers
             return View(new Registreerimine { KoolitusId = koolitusId.Value });
         }
 
-        // Opilane: мои заявки/курсы
         [Authorize(Roles = "Opilane")]
         public ActionResult MinuKoolitused()
         {
@@ -84,7 +79,6 @@ namespace Kool.Controllers
             return View(minu);
         }
 
-        // Opilane: отправить заявку (Pending)
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Opilane")]
@@ -98,15 +92,12 @@ namespace Kool.Controllers
 
             string userId = User.Identity.GetUserId();
 
-            // 1) Запрет на повторную запись
             bool already = db.Registreerimised.Any(r => r.KoolitusId == koolitusId && r.ApplicationUserId == userId);
             if (already)
             {
                 ModelState.AddModelError("", "Sa oled juba selle kursuse jaoks registreerinud.");
                 return View(new Registreerimine { KoolitusId = koolitusId });
             }
-
-            // 2) Проверка мест ТОЛЬКО по Approved
             int approved = koolitus.Registreerimised.Count(r => r.Staatus == RegistreerimineStaatus.Approved);
             if (approved >= koolitus.MaxOsalejaid)
             {
@@ -123,14 +114,12 @@ namespace Kool.Controllers
 
             db.Registreerimised.Add(reg);
 
-            // если есть уникальный индекс — SaveChanges может бросить исключение на дубль
             db.SaveChanges();
 
             TempData["msg"] = "Registreerimine saadetud. Ootab kinnitamist.";
             return RedirectToAction("MinuKoolitused");
         }
 
-        // Admin/Opetaja: список Pending (все)
         [Authorize(Roles = "Admin,Opetaja")]
         public ActionResult Pending()
         {
@@ -145,14 +134,12 @@ namespace Kool.Controllers
             return View(pending);
         }
 
-        // Admin/Opetaja: подтвердить (Approved) — место займется только сейчас
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Opetaja")]
 
         public ActionResult Approve(int id)
         {
-            // 1. Получаем данные заявки вместе с данными пользователя и курса
             var reg = db.Registreerimised
                 .Include(r => r.Koolitus)
                 .Include(r => r.Koolitus.Keelekursus)
@@ -161,17 +148,13 @@ namespace Kool.Controllers
 
             if (reg == null) return HttpNotFound();
 
-            // Проверка, чтобы не одобрять уже одобренное
             if (reg.Staatus == RegistreerimineStaatus.Pending)
             {
-                // 2. Меняем статус и сохраняем
                 reg.Staatus = RegistreerimineStaatus.Approved;
                 db.SaveChanges();
 
-                // 3. ОТПРАВКА ПОЧТЫ (как в твоем примере HomeController)
                 try
                 {
-                    // Настройки SMTP
                     WebMail.SmtpServer = "smtp.gmail.com";
                     WebMail.SmtpPort = 587;
                     WebMail.EnableSsl = true;
@@ -179,7 +162,6 @@ namespace Kool.Controllers
                     WebMail.Password = "-";
                     WebMail.From = "eha20082@gmail.com";
 
-                    // Содержимое письма
                     string sisu = $@"
                 <h2>Tere, {reg.ApplicationUser.UserName}!</h2>
                 <p>Teid on vastu võetud kursusele: <b>{reg.Koolitus.Keelekursus.Nimetus}</b>.</p>
@@ -187,7 +169,6 @@ namespace Kool.Controllers
                 <br/>
                 <p>Parimate soovidega, Kooli administratsioon</p>";
 
-                    // Отправка
                     WebMail.Send(
                         to: reg.ApplicationUser.Email,
                         subject: "Kinnitus: " + reg.Koolitus.Keelekursus.Nimetus,
@@ -199,16 +180,13 @@ namespace Kool.Controllers
                 }
                 catch (System.Exception ex)
                 {
-                    // Если почта не ушла, выводим ошибку, но регистрация уже сохранена как Approved
                     TempData["msg"] = "Kinnitatud, kuid e-kirja viga: " + ex.Message;
                 }
             }
 
-            // Возврат на страницу регистрации конкретного курса
             return RedirectToAction("Registrations", "Koolitus", new { id = reg.KoolitusId });
         }
 
-        // Admin/Opetaja: отклонить
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Opetaja")]
@@ -223,11 +201,9 @@ namespace Kool.Controllers
                 db.SaveChanges();
             }
 
-            // Направляем обратно в KoolitusController к методу Registrations
             return RedirectToAction("Registrations", "Koolitus", new { id = reg.KoolitusId });
         }
 
-        // Admin: Edit (оставим, но лучше пользоваться Approve/Reject)
         [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
@@ -252,7 +228,6 @@ namespace Kool.Controllers
             return RedirectToAction("Index");
         }
 
-        // Admin: Delete
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {

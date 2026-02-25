@@ -1,10 +1,10 @@
 ﻿@model Kool.Models.Registreerimine
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Üksikasjad";
 }
 
-<h2>Details</h2>
+<h2>Üksikasjad</h2>
 
 <div>
     <h4>Registreerimine</h4>
@@ -33,10 +33,9 @@
         <dd>
             @Html.DisplayFor(model => model.Staatus)
         </dd>
-
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Muuda", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Tagasi nimekirja", "Index")
 </p>

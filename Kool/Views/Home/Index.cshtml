@@ -1,11 +1,11 @@
 ﻿@{
-    ViewBag.Title = "Edu Samm Keelekool";
+    ViewBag.Title = "KeeleOpp";
 }
 
 <main>
     <section class="row py-5 mb-4 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px;">
         <div class="col-md-8 px-5">
-            <h1 id="title" class="display-4 fw-bold">Tere tulemast keeltekooli "Edu Samm"!</h1>
+            <h1 id="title" class="display-4 fw-bold">Tere tulemast keeltekooli "KeeleOpp"!</h1>
             <p class="lead">Meie missioon on avada uksi maailma läbi keeleõppe. Pakume kaasaegset õpikeskkonda ja parimaid õpetajaid.</p>
             <hr class="my-4" style="border-top: 1px solid rgba(255,255,255,0.3)">
 
@@ -39,7 +39,9 @@
                     <p><span class="badge bg-success">Eesti keel</span> <span class="badge bg-info">Inglise keel</span> <span class="badge bg-danger">Saksa keel</span></p>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <a class="btn btn-outline-primary w-100" href="@Url.Action("Keelekursused", "Index", "Keelekursus")">Loe õppekavadest &raquo;</a>
+
+                    <li>@Html.ActionLink("Loe õppekavadest", "Index", "Keelekursus", new { area = "" }, new { @class = "nav-link" })</li>
+
                 </div>
             </div>
         </section>
@@ -75,8 +77,9 @@
     </div>
 
     <div class="mt-5 p-4 bg-light rounded shadow-sm text-center">
-        <h3>Kas otsite koolitust ettevõttele?</h3>
-        <p class="text-muted">Koostame personaalse pakkumise vastavalt teie meeskonna vajadustele ja valdkonnale.</p>
+        <h3>Kas otsite koolitust enda jaoks?</h3>
+        <p class="text-muted">Koostame personaalse pakkumise vastavalt teie vajadustele ja valdkonnale.(Võite registreeruda esimesele 
+        tasuta tunnile, et selgitada välja oma keeleoskus ja alustada õpinguid!)</p>
         <a href="mailto:info@edusamm.ee" class="btn btn-dark px-4">Võta ühendust</a>
     </div>
 </main>

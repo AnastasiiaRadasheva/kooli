@@ -1,16 +1,15 @@
 ﻿@model Kool.Models.Koolitus
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Muutmine";
 }
 
-<h2>Edit</h2>
-
+<h2>Muutmine</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Koolitus</h4>
         <hr />
@@ -18,7 +17,7 @@
         @Html.HiddenFor(model => model.Id)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.KeelekursusId, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.KeelekursusId, "Keelekursus", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.KeelekursusId, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.KeelekursusId, "", new { @class = "text-danger" })
@@ -26,7 +25,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.OpetajaId, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.OpetajaId, "Õpetaja", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.OpetajaId, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.OpetajaId, "", new { @class = "text-danger" })
@@ -34,7 +33,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.AlgusKuupaev, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.AlgusKuupaev, "Alguskuupäev", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.AlgusKuupaev, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.AlgusKuupaev, "", new { @class = "text-danger" })
@@ -42,7 +41,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.LoppKuupaev, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.LoppKuupaev, "Lõppkuupäev", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.LoppKuupaev, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.LoppKuupaev, "", new { @class = "text-danger" })
@@ -50,7 +49,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Hind, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Hind, "Hind", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Hind, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Hind, "", new { @class = "text-danger" })
@@ -58,7 +57,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.MaxOsalejaid, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.MaxOsalejaid, "Maksimaalne osalejate arv", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.MaxOsalejaid, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.MaxOsalejaid, "", new { @class = "text-danger" })
@@ -67,14 +66,14 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Salvesta" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Tagasi nimekirja", "Index")
 </div>
 
 @section Scripts {

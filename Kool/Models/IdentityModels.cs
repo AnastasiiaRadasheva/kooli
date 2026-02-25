@@ -39,7 +39,6 @@ namespace Kool.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            // Уникальная пара (KoolitusId, ApplicationUserId) => нельзя записаться на один курс дважды
             modelBuilder.Entity<Registreerimine>()
                 .Property(r => r.KoolitusId)
                 .HasColumnAnnotation(

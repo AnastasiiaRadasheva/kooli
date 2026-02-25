@@ -1,14 +1,15 @@
 ﻿@model IEnumerable<Kool.Models.Registreerimine>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Registreerimised";
 }
 
-<h2>Index</h2>
+<h2>Registreerimised</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Lisa uus", "Create")
 </p>
+
 <table class="table">
     <tr>
         <th>
@@ -20,26 +21,27 @@
         <th>
             @Html.DisplayNameFor(model => model.Staatus)
         </th>
-        <th></th>
+        <th>Tegevused</th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.KoolitusId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ApplicationUserId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Staatus)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.KoolitusId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApplicationUserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Staatus)
+            </td>
+            <td>
+                @Html.ActionLink("Muuda", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Üksikasjad", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Kustuta", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
 
 </table>

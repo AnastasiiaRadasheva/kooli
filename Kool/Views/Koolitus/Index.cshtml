@@ -10,14 +10,21 @@
     <div class="col-md-6">
         <h2>Koolituste nimekiri</h2>
     </div>
-    <div class="col-md-6 text-right">
-        @if (User.IsInRole("Admin"))
-        {
-            @Html.ActionLink("+ Lisa uus koolitus", "Create", null, new { @class = "btn btn-success" })
-        }
-    </div>
 </div>
-
+<div class="col-md-6 text-right">
+    @if (User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("+ Lisa uus koolitus", "Create", null, new { @class = "btn btn-success" })
+    }
+</div>
+<div class="well">
+    <form action="@Url.Action("Index1", "Koolitus")" method="get" class="form-inline">
+        <input type="text" name="keel" class="form-control" placeholder="Otsi keelt..." value="@Request.QueryString["keel"]" />
+        <input type="text" name="nimi" class="form-control" placeholder="Otsi õpetajat..." value="@Request.QueryString["nimi"]" />
+        <button type="submit" class="btn btn-primary">Otsi</button>
+        <a href="@Url.Action("Index1")" class="btn btn-default">Tühjenda</a>
+    </form>
+</div>
 <table class="table table-hover">
     <thead>
         <tr class="active">
@@ -73,12 +80,12 @@
                         @if (ootel > 0)
                         {
                             <a href="@Url.Action("Registrations", "Koolitus", new { id = item.Id })" class="label label-warning" style="padding: 5px 8px; font-size: 0.9em;">
-                                @ootel uut soovi
+                                @ootel uut registreerimist
                             </a>
                         }
                         else
                         {
-                            <span class="text-muted small">0 ootel</span>
+                            <span class="text-muted small">0 ootel soovi</span>
                         }
                     </td>
                 }
@@ -87,7 +94,7 @@
                     <div class="btn-group">
                         @if (onTais)
                         {
-                            <span class="label label-danger" style="margin-right:10px; display:inline-block; padding: 6px;">GRUPP TÄIS</span>
+                            <span class="label label-danger" style="margin-right:10px; display:inline-block; padding: 6px;">Grupp on täis</span>
                         }
                         else if (Request.IsAuthenticated && User.IsInRole("Opilane"))
                         {

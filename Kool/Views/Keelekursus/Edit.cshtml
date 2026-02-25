@@ -1,16 +1,15 @@
 ﻿@model Kool.Models.Keelekursus
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Muutmine";
 }
 
-<h2>Edit</h2>
-
+<h2>Muutmine</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Keelekursus</h4>
         <hr />
@@ -18,7 +17,7 @@
         @Html.HiddenFor(model => model.Id)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Nimetus, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Nimetus, "Nimetus", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Nimetus, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Nimetus, "", new { @class = "text-danger" })
@@ -26,7 +25,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Keel, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Keel, "Keel", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Keel, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Keel, "", new { @class = "text-danger" })
@@ -34,7 +33,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Tase, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Tase, "Tase", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Tase, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Tase, "", new { @class = "text-danger" })
@@ -42,7 +41,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Kirjeldus, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Kirjeldus, "Kirjeldus", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Kirjeldus, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Kirjeldus, "", new { @class = "text-danger" })
@@ -51,14 +50,14 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Salvesta" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Tagasi nimekirja", "Index")
 </div>
 
 @section Scripts {
