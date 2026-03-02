@@ -272,7 +272,7 @@ namespace Kool.Controllers
                 WebMail.SmtpPort = 587;
                 WebMail.EnableSsl = true;
                 WebMail.UserName = "eha20082@gmail.com";
-                WebMail.Password = "iakc rgui tmxd erwf";
+                WebMail.Password = "----";
 
                 WebMail.Send(to: email, subject: subject, body: message);
                 TempData["Msg"] = "Kiri on saadetud kasutajale " + email;

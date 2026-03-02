@@ -108,7 +108,7 @@
 
                         @if (User.IsInRole("Admin"))
                         {
-                            @Html.ActionLink("Vaata (" + approved + ")", "Osalejad", "Koolitus",
+                            @Html.ActionLink("Vaata Inimesed", "Osalejad", "Koolitus",
                                 new { id = item.Id },
                                 new { @class = "btn btn-info btn-sm" })
 
