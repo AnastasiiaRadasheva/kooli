@@ -5,58 +5,67 @@
 }
 
 <h2>Õpetajad</h2>
-
-<p>
-    @Html.ActionLink("Lisa uus", "Create")
-</p>
-
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Nimi)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Kvalifikatsioon)
-        </th>
-        <th>
-            Foto
-        </th>
-        <th>
-            Tegevused
-        </th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("Lisa uus", "Create")
+    </p>
+}
+    <table class="table">
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nimi)
-            </td>
-
-            <td>
-                @Html.DisplayFor(modelItem => item.Kvalifikatsioon)
-            </td>
-
-            <td>
-                <img src="@Url.Content("~/Content/uploads/opetajad/" +
-                (string.IsNullOrEmpty(item.FotoPath) ? "default.png" : item.FotoPath))"
-                     alt="@item.Nimi"
-                     style="width:120px;height1200px;object-fit:cover;border-radius:50%;" />
-            </td>
-
-            <td>
-                @Html.ActionLink(
-                    "Koolitused",
-                    "ByOpetaja",
-                    "Koolitus",
-                    new { id = item.Id },
-                    new { @class = "btn btn-sm btn-info" }
-                )
-                |
-                @Html.ActionLink("Muuda", "Edit", new { id = item.Id })
-                |
-                @Html.ActionLink("Kustuta", "Delete", new { id = item.Id })
-            </td>
+            <th>
+                @Html.DisplayNameFor(model => model.Nimi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Kvalifikatsioon)
+            </th>
+            <th>
+                Foto
+            </th>
+            <th>
+                Tegevused
+            </th>
         </tr>
-    }
-</table>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nimi)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Kvalifikatsioon)
+                </td>
+
+                <td>
+                    <img src="@Url.Content("~/Content/uploads/opetajad/" +
+                (string.IsNullOrEmpty(item.FotoPath) ? "default.png" : item.FotoPath))"
+                         alt="@item.Nimi"
+                         style="width:120px;height1200px;object-fit:cover;border-radius:50%;" />
+                </td>
+
+                <td>
+
+                        @Html.ActionLink(
+                                 "Koolitused",
+                                 "ByOpetaja1",
+                                 "Koolitus",
+                                 new { id = item.Id },
+                                 new { @class = "btn btn-sm btn-info" }
+                             )
+
+
+
+
+                    @if (User.IsInRole("Admin"))
+                    {
+
+                        @Html.ActionLink("Muuda ", "Edit", new { id = item.Id })
+
+                        @Html.ActionLink(" Kustuta", "Delete", new { id = item.Id })
+                    }
+                </td>
+            </tr>
+        }
+    </table>

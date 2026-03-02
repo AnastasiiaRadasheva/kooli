@@ -394,6 +394,18 @@ namespace Kool.Controllers
         }
 
 
+
+        [AllowAnonymous]
+        public ActionResult ByOpetaja1(int id)
+        {
+            var list = db.Koolitused
+        .Include(k => k.Keelekursus)
+        .Include(k => k.Opetaja)
+        .Where(k => k.OpetajaId == id)
+        .ToList();
+
+            return View("IndexK", list);
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing) db.Dispose();

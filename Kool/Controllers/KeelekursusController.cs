@@ -3,20 +3,19 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using Kool.Models;
-
 namespace Kool.Controllers
 {
     public class KeelekursusController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: Keelekursus  (ВСЕМ можно смотреть)
+        // GET: Keelekursus 
         public ActionResult Index()
         {
             return View(db.Keelekursused.ToList());
         }
 
-        // GET: Keelekursus/Details/5  (ВСЕМ можно смотреть)
+        // GET: Keelekursus/Details/5 
         public ActionResult Details(int? id)
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -27,14 +26,14 @@ namespace Kool.Controllers
             return View(keelekursus);
         }
 
-        // GET: Keelekursus/Create  (ТОЛЬКО Admin)
+        // GET: Keelekursus/Create 
         [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Keelekursus/Create  (ТОЛЬКО Admin)
+        // POST: Keelekursus/Create  
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -50,7 +49,7 @@ namespace Kool.Controllers
             return View(keelekursus);
         }
 
-        // GET: Keelekursus/Edit/5  (ТОЛЬКО Admin)
+        // GET: Keelekursus/Edit/5  
         [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
@@ -62,7 +61,7 @@ namespace Kool.Controllers
             return View(keelekursus);
         }
 
-        // POST: Keelekursus/Edit/5  (ТОЛЬКО Admin)
+        // POST: Keelekursus/Edit/5 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -76,8 +75,8 @@ namespace Kool.Controllers
             }
             return View(keelekursus);
         }
-
-        // GET: Keelekursus/Delete/5  (ТОЛЬКО Admin)
+        
+        // GET: Keelekursus/Delete/5  
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
@@ -89,7 +88,7 @@ namespace Kool.Controllers
             return View(keelekursus);
         }
 
-        // POST: Keelekursus/Delete/5  (ТОЛЬКО Admin)
+        // POST: Keelekursus/Delete/5  (
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]

@@ -24,13 +24,11 @@ namespace Kool.Controllers
             roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
         }
 
-        // ---------------- INDEX ----------------
         public ActionResult Index()
         {
             return View(db.Opetajad.ToList());
         }
 
-        // ---------------- DETAILS ----------------
         public ActionResult Details(int? id)
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -39,14 +37,12 @@ namespace Kool.Controllers
             return View(opetaja);
         }
 
-        // ---------------- CREATE (GET) ----------------
         [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             return View(new OpetajaCreateVM());
         }
 
-        // ---------------- CREATE (POST) ----------------
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -55,7 +51,6 @@ namespace Kool.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
-            // 1. Создаём пользователя
             var user = new ApplicationUser
             {
                 UserName = vm.Email,
@@ -75,7 +70,6 @@ namespace Kool.Controllers
 
             userManager.AddToRole(user.Id, "Opetaja");
 
-            // 2. Фото
             string fileName = "default.png";
             if (foto != null && foto.ContentLength > 0)
             {
@@ -94,7 +88,6 @@ namespace Kool.Controllers
                 foto.SaveAs(Path.Combine(path, fileName));
             }
 
-            // 3. Учитель
             var opetaja = new Opetaja
             {
                 Nimi = vm.Nimi,
@@ -109,7 +102,6 @@ namespace Kool.Controllers
             return RedirectToAction("Index");
         }
 
-        // ---------------- EDIT (GET) ----------------
         [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
@@ -132,7 +124,6 @@ namespace Kool.Controllers
             });
         }
 
-        // ---------------- EDIT (POST) ----------------
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -143,12 +134,13 @@ namespace Kool.Controllers
 
             var opetaja = db.Opetajad.Find(vm.Id);
             var user = userManager.FindById(vm.ApplicationUserId);
-            if (opetaja == null || user == null) return HttpNotFound();
+
+            if (opetaja == null || user == null)
+                return HttpNotFound();
 
             opetaja.Nimi = vm.Nimi;
             opetaja.Kvalifikatsioon = vm.Kvalifikatsioon;
 
-            // Фото
             if (foto != null && foto.ContentLength > 0)
             {
                 var ext = Path.GetExtension(foto.FileName).ToLower();
@@ -160,37 +152,53 @@ namespace Kool.Controllers
                     return View(vm);
                 }
 
+                var folder = Server.MapPath("~/Content/uploads/opetajad/");
+                Directory.CreateDirectory(folder);
+
                 if (!string.IsNullOrEmpty(opetaja.FotoPath) && opetaja.FotoPath != "default.png")
                 {
-                    var old = Server.MapPath("~/Content/uploads/opetajad/" + opetaja.FotoPath);
-                    if (System.IO.File.Exists(old))
-                        System.IO.File.Delete(old);
+                    var oldPath = Path.Combine(folder, opetaja.FotoPath);
+                    if (System.IO.File.Exists(oldPath))
+                        System.IO.File.Delete(oldPath);
                 }
 
-                var newName = Guid.NewGuid() + ext;
-                foto.SaveAs(Server.MapPath("~/Content/uploads/opetajad/" + newName));
-                opetaja.FotoPath = newName;
+                var newFileName = Guid.NewGuid() + ext;
+                var fullPath = Path.Combine(folder, newFileName);
+
+                foto.SaveAs(fullPath);
+                opetaja.FotoPath = newFileName;
             }
 
-            // Email
             if (user.Email != vm.Email)
             {
                 user.Email = vm.Email;
                 user.UserName = vm.Email;
+
+                var updateResult = userManager.Update(user);
+                if (!updateResult.Succeeded)
+                {
+                    foreach (var err in updateResult.Errors)
+                        ModelState.AddModelError("", err);
+
+                    return View(vm);
+                }
             }
 
-            // Пароль
             if (!string.IsNullOrWhiteSpace(vm.NewPassword))
             {
-                var token = userManager.GeneratePasswordResetToken(user.Id);
-                userManager.ResetPassword(user.Id, token, vm.NewPassword);
+                if (!string.IsNullOrWhiteSpace(vm.NewPassword))
+                {
+                    user.PasswordHash = userManager.PasswordHasher.HashPassword(vm.NewPassword);
+                    userManager.Update(user);
+                }
+    
             }
 
             db.SaveChanges();
+
             return RedirectToAction("Index");
         }
 
-        // ---------------- DELETE ----------------
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
@@ -213,6 +221,22 @@ namespace Kool.Controllers
             return RedirectToAction("Index");
         }
 
+        [AllowAnonymous]
+        public ActionResult ByOpetaja(int id)
+        {
+            var opetaja = db.Opetajad.Find(id);
+            if (opetaja == null)
+                return HttpNotFound();
+
+            var koolitused = db.Koolitused
+                .Include(k => k.Keelekursus)
+                .Where(k => k.OpetajaId == id)
+                .ToList();
+
+            ViewBag.OpetajaNimi = opetaja.Nimi;
+
+            return View(koolitused);
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing) db.Dispose();
