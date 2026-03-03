@@ -12,6 +12,19 @@ namespace Kool.Controllers
 {
     public class KoolitusController : Controller
     {
+
+        private void LoadCounts()
+        {
+            ViewBag.PendingCounts = db.Registreerimised
+                .Where(r => r.Staatus == RegistreerimineStaatus.Pending)
+                .GroupBy(r => r.KoolitusId)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            ViewBag.ApprovedCounts = db.Registreerimised
+                .Where(r => r.Staatus == RegistreerimineStaatus.Approved)
+                .GroupBy(r => r.KoolitusId)
+                .ToDictionary(g => g.Key, g => g.Count());
+        }
         private ApplicationDbContext db = new ApplicationDbContext();
         [Authorize(Roles = "Admin")]
         public ActionResult ByOpetaja(int id)
@@ -27,7 +40,8 @@ namespace Kool.Controllers
                 .GroupBy(r => r.KoolitusId)
                 .ToDictionary(g => g.Key, g => g.Count());
 
-            return View("Index", list); 
+            LoadCounts();
+            return View("IndexK", list); 
         }
 
         [AllowAnonymous]
@@ -146,7 +160,7 @@ namespace Kool.Controllers
                 .ToDictionary(x => x.KoolitusId, x => x.Cnt);
 
             ViewBag.PendingCounts = pendingCounts;
-
+            LoadCounts();
             return View("IndexK", list);
         }
 
@@ -159,7 +173,7 @@ namespace Kool.Controllers
             {
                 db.Koolitused.Add(koolitus);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("IndexK");
             }
 
             ViewBag.OpetajaId = new SelectList(db.Opetajad, "Id", "Nimi", koolitus.OpetajaId);
@@ -188,7 +202,7 @@ namespace Kool.Controllers
             {
                 db.Entry(koolitus).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("IndexK");
             }
             return View(koolitus);
         }
@@ -205,23 +219,34 @@ namespace Kool.Controllers
             if (koolitus == null)
                 return HttpNotFound();
 
+            // Если это учитель — проверяем, что курс его
             if (User.IsInRole("Opetaja"))
             {
                 if (koolitus.Opetaja == null || koolitus.Opetaja.ApplicationUserId != userId)
                     return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
 
-            // Admin сюда проходит БЕЗ проверки
-            var osalejad = db.Registreerimised
+            IQueryable<Registreerimine> query = db.Registreerimised
                 .Include(r => r.ApplicationUser)
-                .Where(r => r.KoolitusId == id && r.Staatus == RegistreerimineStaatus.Approved)
+                .Where(r => r.KoolitusId == id);
+
+            // 🔹 Если это учитель — показываем только Approved
+            if (User.IsInRole("Opetaja"))
+            {
+                query = query.Where(r => r.Staatus == RegistreerimineStaatus.Approved);
+            }
+
+            // 🔹 Admin видит ВСЕ статусы (без фильтра)
+
+            var osalejad = query
                 .OrderBy(r => r.ApplicationUser.UserName)
                 .ToList();
 
             ViewBag.KoolitusId = id;
+
             return View(osalejad);
         }
-      
+
 
         [Authorize(Roles = "Admin,Opetaja")]
         public ActionResult GroupEmail(int koolitusId)
@@ -283,7 +308,7 @@ namespace Kool.Controllers
 
             db.Koolitused.Remove(koolitus);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("IndexK");
         }
 
         [Authorize(Roles = "Admin,Opetaja,Opilane")]
@@ -381,7 +406,7 @@ namespace Kool.Controllers
         .Include(k => k.Opetaja)
         .Where(k => k.OpetajaId == id)
         .ToList();
-
+            LoadCounts();
             return View("IndexK", list);
         }
         protected override void Dispose(bool disposing)
