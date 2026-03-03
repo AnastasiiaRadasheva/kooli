@@ -19,11 +19,11 @@
     }
 </div>
 <div class="well">
-    <form action="@Url.Action("Index1", "Koolitus")" method="get" class="form-inline">
+    <form action="@Url.Action("IndexK", "Koolitus")" method="get" class="form-inline">
         <input type="text" name="keel" class="form-control" placeholder="Otsi keelt..." value="@Request.QueryString["keel"]" />
         <input type="text" name="nimi" class="form-control" placeholder="Otsi õpetajat..." value="@Request.QueryString["nimi"]" />
         <button type="submit" class="btn btn-primary">Otsi</button>
-        <a href="@Url.Action("Index1")" class="btn btn-default">Tühjenda</a>
+        <a href="@Url.Action("IndexK")" class="btn btn-default">Tühjenda</a>
     </form>
 </div>
 <table class="table table-hover">
@@ -102,12 +102,18 @@
                         {
                             <span class="label label-danger" style="margin-right:10px; display:inline-block; padding: 6px;">GRUPP TÄIS</span>
                         }
-
                         @if (Request.IsAuthenticated && User.IsInRole("Opilane"))
                         {
                             if (!onTais)
                             {
                                 @Html.ActionLink("Registreeru", "Create", "Registreerimines", new { koolitusId = item.Id }, new { @class = "btn btn-primary btn-sm" })
+                            }
+                        }
+                        @if (!Request.IsAuthenticated)
+                        {
+                            if (!onTais)
+                            {
+                                @Html.ActionLink("Registreeru", "Login", "Account", new { koolitusId = item.Id }, new { @class = "btn btn-primary btn-sm" })
                             }
                         }
 

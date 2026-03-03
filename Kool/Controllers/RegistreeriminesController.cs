@@ -98,7 +98,10 @@ namespace Kool.Controllers
                 ModelState.AddModelError("", "Sa oled juba selle kursuse jaoks registreerinud.");
                 return View(new Registreerimine { KoolitusId = koolitusId });
             }
-            int approved = koolitus.Registreerimised.Count(r => r.Staatus == RegistreerimineStaatus.Approved);
+            int approved = db.Registreerimised
+    .Count(r => r.KoolitusId == koolitusId
+             && r.Staatus == RegistreerimineStaatus.Approved);
+
             if (approved >= koolitus.MaxOsalejaid)
             {
                 ModelState.AddModelError("", "GRUPP TÄIS. Registreerimine pole võimalik.");

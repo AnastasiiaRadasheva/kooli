@@ -29,41 +29,32 @@ namespace Kool.Controllers
 
             return View("Index", list); 
         }
-        [Authorize(Roles = "Admin")]
-        public ActionResult Index()
-        {
-            var list = db.Koolitused.ToList();
-
-            var pendingCounts = db.Registreerimised
-                .Where(r => r.Staatus == RegistreerimineStaatus.Pending)
-                .GroupBy(r => r.KoolitusId)
-                .Select(g => new { KoolitusId = g.Key, Cnt = g.Count() })
-                .ToList()
-                .ToDictionary(x => x.KoolitusId, x => x.Cnt);
-
-            ViewBag.PendingCounts = pendingCounts;
-
-            return View(list);
-        }
 
         [AllowAnonymous]
-        public ActionResult IndexK()
+        public ActionResult IndexK(string keel, string nimi)
         {
-            var list = db.Koolitused
+            var andmed = db.Koolitused
                 .Include(k => k.Keelekursus)
                 .Include(k => k.Opetaja)
-                .ToList();
+                .AsQueryable();
 
-            var pendingCounts = db.Registreerimised
+            if (!string.IsNullOrEmpty(keel))
+                andmed = andmed.Where(x => x.Keelekursus.Keel.Contains(keel));
+
+            if (!string.IsNullOrEmpty(nimi))
+                andmed = andmed.Where(x => x.Opetaja.Nimi.Contains(nimi));
+
+            ViewBag.PendingCounts = db.Registreerimised
                 .Where(r => r.Staatus == RegistreerimineStaatus.Pending)
                 .GroupBy(r => r.KoolitusId)
-                .Select(g => new { KoolitusId = g.Key, Cnt = g.Count() })
-                .ToList()
-                .ToDictionary(x => x.KoolitusId, x => x.Cnt);
+                .ToDictionary(g => g.Key, g => g.Count());
 
-            ViewBag.PendingCounts = pendingCounts;
+            ViewBag.ApprovedCounts = db.Registreerimised
+                .Where(r => r.Staatus == RegistreerimineStaatus.Approved)
+                .GroupBy(r => r.KoolitusId)
+                .ToDictionary(g => g.Key, g => g.Count());
 
-            return View("IndexK", list);
+            return View(andmed.ToList());
         }
 
         [AllowAnonymous]
@@ -230,20 +221,7 @@ namespace Kool.Controllers
             ViewBag.KoolitusId = id;
             return View(osalejad);
         }
-        public ActionResult Index1(string keel, string nimi)
-        {
-            var andmed = db.Koolitused.Include(k => k.Keelekursus).Include(k => k.Opetaja).AsQueryable();
-
-            if (!string.IsNullOrEmpty(keel)) andmed = andmed.Where(x => x.Keelekursus.Keel.Contains(keel));
-            if (!string.IsNullOrEmpty(nimi)) andmed = andmed.Where(x => x.Opetaja.Nimi.Contains(nimi));
-
-            ViewBag.PendingCounts = db.Registreerimised
-                .Where(r => r.Staatus == RegistreerimineStaatus.Pending)
-                .GroupBy(r => r.KoolitusId)
-                .ToDictionary(g => g.Key, g => g.Count());
-
-            return View("IndexK", andmed.ToList());
-        }
+      
 
         [Authorize(Roles = "Admin,Opetaja")]
         public ActionResult GroupEmail(int koolitusId)
