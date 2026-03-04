@@ -27,21 +27,7 @@
     </form>
 </div>
 <table class="table table-hover">
-    <thead>
-        <tr class="active">
-            <th>Kursus</th>
-            <th>Õpetaja</th>
-            <th>Algus</th>
-            <th>Lõpp</th>
-            <th>Hind</th>
-            @if (User.IsInRole("Admin"))
-            {
-                <th>Ootel soovid</th>
-            }
-            <th class="text-right">Tegevused</th>
-        </tr>
-    </thead>
-    <tbody>
+    <div class="row">
         @foreach (var item in Model)
         {
             int approved = 0;
@@ -49,11 +35,8 @@
             {
                 approved = approvedCounts[item.Id];
             }
-            int kinnitatud = 0;
-            if (approvedCounts != null && approvedCounts.ContainsKey(item.Id))
-            {
-                kinnitatud = approvedCounts[item.Id];
-            }
+
+  
 
             int ootel = 0;
             if (pendingCounts != null && pendingCounts.ContainsKey(item.Id))
@@ -61,63 +44,87 @@
                 ootel = pendingCounts[item.Id];
             }
 
-            bool onTais = kinnitatud >= item.MaxOsalejaid;
+            bool onTais = approved >= item.MaxOsalejaid;
 
-            <tr>
-                <td style="font-weight:bold; vertical-align:middle;">
-                    @(item.Keelekursus != null ? item.Keelekursus.Nimetus : "Kursus puudub")
-                </td>
-                <td style="vertical-align:middle;">
-                    @(item.Opetaja != null ? item.Opetaja.Nimi : "Määramata")
-                </td>
-                <td style="vertical-align:middle;">
-                    @item.AlgusKuupaev.ToString("dd.MM.yyyy")
-                </td>
-                <td style="vertical-align:middle;">
-                    @item.LoppKuupaev.ToString("dd.MM.yyyy")
-                </td>
-                <td style="vertical-align:middle;">
-                    <strong>@item.Hind €</strong>
-                </td>
+            <div class="col-md-4" style="margin-bottom:25px;">
+                <div class="card shadow-sm" style="padding:20px; border-radius:10px; height:100%;">
 
-                @if (User.IsInRole("Admin"))
-                {
-                    <td style="vertical-align:middle;">
-                        @if (ootel > 0)
-                        {
-                            <a href="@Url.Action("Registrations", "Koolitus", new { id = item.Id })" class="label label-warning">
-                                @ootel uut soovi
-                            </a>
-                        }
-                        else
-                        {
-                            <span class="text-muted">0</span>
-                        }
-                    </td>
-                }
+                    <h3 style="margin-top:0;">
+                        @(item.Keelekursus != null ? item.Keelekursus.Nimetus : "Kursus puudub")
+                    </h3>
 
-                <td class="text-right" style="vertical-align:middle;">
-                    <div class="btn-group">
+                    <p>
+                        <strong>Õpetaja:</strong>
+                        @(item.Opetaja != null ? item.Opetaja.Nimi : "Määramata")
+                    </p>
+
+                    <p>
+                        <strong>Algus:</strong>
+                        @item.AlgusKuupaev.ToString("dd.MM.yyyy")
+                    </p>
+
+                    <p>
+                        <strong>Lõpp:</strong>
+                        @item.LoppKuupaev.ToString("dd.MM.yyyy")
+                    </p>
+
+                    <p>
+                        <strong>Hind:</strong>
+                        <span style="font-size:18px; color:#28a745;">
+                            @item.Hind €
+                        </span>
+                    </p>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <p>
+                            <strong>Ootel:</strong>
+
+                            @if (ootel > 0)
+                            {
+                                <a href="@Url.Action("Registrations", "Koolitus", new { id = item.Id })" class="label label-warning">
+                                    @ootel uut soovi
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">0</span>
+                            }
+                        </p>
+                    }
+
+                    <div style="margin-top:15px;">
+
                         @if (onTais)
                         {
-                            <span class="label label-danger" style="margin-right:10px; display:inline-block; padding: 6px;">GRUPP TÄIS</span>
+                            <span class="label label-danger" style="display:block; margin-bottom:10px;">
+                                GRUPP TÄIS
+                            </span>
                         }
+
                         @if (Request.IsAuthenticated && User.IsInRole("Opilane"))
                         {
                             if (!onTais)
                             {
-                                @Html.ActionLink("Registreeru", "Create", "Registreerimines", new { koolitusId = item.Id }, new { @class = "btn btn-primary btn-sm" })
+                                @Html.ActionLink("Registreeru", "Create", "Registreerimines",
+                                    new { koolitusId = item.Id },
+                                    new { @class = "btn btn-primary btn-sm" })
                             }
                         }
+
                         @if (!Request.IsAuthenticated)
                         {
                             if (!onTais)
                             {
-                                @Html.ActionLink("Registreeru", "Login", "Account", new { koolitusId = item.Id }, new { @class = "btn btn-primary btn-sm" })
+                                @Html.ActionLink("Registreeru", "Login", "Account",
+                                    new { koolitusId = item.Id },
+                                    new { @class = "btn btn-primary btn-sm" })
                             }
                         }
 
-                        @Html.ActionLink("Detailid", "Details", new { id = item.Id }, new { @class = "btn btn-default btn-sm" })
+                        @Html.ActionLink("Detailid", "Details",
+                            new { id = item.Id },
+                            new { @class = "btn btn-default btn-sm" })
 
                         @if (User.IsInRole("Admin"))
                         {
@@ -125,12 +132,19 @@
                                 new { id = item.Id },
                                 new { @class = "btn btn-info btn-sm" })
 
-                            @Html.ActionLink("Muuda", "Edit", new { id = item.Id }, new { @class = "btn btn-warning btn-sm" })
-                            @Html.ActionLink("Kustuta", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-sm" })
+                            @Html.ActionLink("Muuda", "Edit",
+                                new { id = item.Id },
+                                new { @class = "btn btn-warning btn-sm" })
+
+                            @Html.ActionLink("Kustuta", "Delete",
+                                new { id = item.Id },
+                                new { @class = "btn btn-danger btn-sm" })
                         }
+
                     </div>
-                </td>
-            </tr>
+
+                </div>
+            </div>
         }
-    </tbody>
+    </div>
 </table>

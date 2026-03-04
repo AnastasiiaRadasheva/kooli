@@ -23,9 +23,10 @@
 
                     @if (!User.Identity.IsAuthenticated)
                     {
+                        <li>@Html.ActionLink("Keelekursused", "Index", "Keelekursus", new { area = "" }, new { @class = "nav-link" })</li>
+
                         <li>@Html.ActionLink("Kõik koolitused", "indexK", "Koolitus", new { area = "" }, new { @class = "nav-link" })</li>
                         <li>@Html.ActionLink("Õpetajad", "Index", "Opetajas", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li>@Html.ActionLink("Keelekursused", "Index", "Keelekursus", new { area = "" }, new { @class = "nav-link" })</li>
 
                     }
                     @if (User.IsInRole("Admin"))
@@ -47,7 +48,7 @@
                         <li>@Html.ActionLink("Keelekursused", "Index", "Keelekursus", new { area = "" }, new { @class = "nav-link" })</li>
                         <li>@Html.ActionLink("Kõik koolitused", "indexK", "Koolitus", new { area = "" }, new { @class = "nav-link" })</li>
                         <li class="nav-item">
-                            @Html.ActionLink("Minu koolitused", "MinuKoolitused", "Registreerimines", null, new { @class = "nav-link" })
+                            @Html.ActionLink("Minu koolitused", "MinuKoolitused", "Koolitus", null, new { @class = "nav-link" })
                         </li>
 
                         <li>@Html.ActionLink("Õpetajad", "Index", "Opetajas", new { area = "" }, new { @class = "nav-link" })</li>

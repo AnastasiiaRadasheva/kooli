@@ -11,61 +11,57 @@
         @Html.ActionLink("Lisa uus", "Create")
     </p>
 }
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nimi)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Kvalifikatsioon)
-            </th>
-            <th>
-                Foto
-            </th>
-            <th>
-                Tegevused
-            </th>
-        </tr>
+
+    <div class="row">
 
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nimi)
-                </td>
+            <div class="col-md-4" style="margin-bottom:25px;">
+                <div class="card shadow-sm" style="padding:20px; border-radius:10px; text-align:center; height:100%;">
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.Kvalifikatsioon)
-                </td>
-
-                <td>
                     <img src="@Url.Content("~/Content/uploads/opetajad/" +
-                (string.IsNullOrEmpty(item.FotoPath) ? "default.png" : item.FotoPath))"
+(string.IsNullOrEmpty(item.FotoPath) ? "default.png" : item.FotoPath))"
                          alt="@item.Nimi"
-                         style="width:120px;height1200px;object-fit:cover;" />
-                </td>
+                         style="width:140px;height:140px;object-fit:cover;display:block;margin:0 auto 15px;" />
+                    <h3 style="margin-top:0;">
+                        @Html.DisplayFor(modelItem => item.Nimi)
+                    </h3>
 
-                <td>
+                    <p style="color:#666;">
+                        @Html.DisplayFor(modelItem => item.Kvalifikatsioon)
+                    </p>
+
+                    <div style="margin-top:15px;">
 
                         @Html.ActionLink(
-                                 "Koolitused",
-                                 "ByOpetaja1",
-                                 "Koolitus",
-                                 new { id = item.Id },
-                                 new { @class = "btn btn-sm btn-info" }
-                             )
+                            "Koolitused",
+                            "ByOpetaja1",
+                            "Koolitus",
+                            new { id = item.Id },
+                            new { @class = "btn btn-info btn-sm" }
+                        )
 
+                        @if (User.IsInRole("Admin"))
+                        {
+                            @Html.ActionLink(
+                                "Muuda",
+                                "Edit",
+                                new { id = item.Id },
+                                new { @class = "btn btn-warning btn-sm" }
+                            )
 
+                            @Html.ActionLink(
+                                "Kustuta",
+                                "Delete",
+                                new { id = item.Id },
+                                new { @class = "btn btn-danger btn-sm" }
+                            )
+                        }
 
+                    </div>
 
-                    @if (User.IsInRole("Admin"))
-                    {
-
-                        @Html.ActionLink("Muuda ", "Edit", new { id = item.Id })
-
-                        @Html.ActionLink(" Kustuta", "Delete", new { id = item.Id })
-                    }
-                </td>
-            </tr>
+                </div>
+            </div>
         }
-    </table>
+
+    </div>

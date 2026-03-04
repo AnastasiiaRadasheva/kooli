@@ -63,21 +63,7 @@ namespace Kool.Controllers
             return View(new Registreerimine { KoolitusId = koolitusId.Value });
         }
 
-        [Authorize(Roles = "Opilane")]
-        public ActionResult MinuKoolitused()
-        {
-            string userId = User.Identity.GetUserId();
 
-            var minu = db.Registreerimised
-                .Where(r => r.ApplicationUserId == userId)
-                .Include(r => r.Koolitus)
-                .Include(r => r.Koolitus.Keelekursus)
-                .Include(r => r.Koolitus.Opetaja)
-                .OrderByDescending(r => r.Id)
-                .ToList();
-
-            return View(minu);
-        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -88,24 +74,28 @@ namespace Kool.Controllers
                 .Include(k => k.Registreerimised)
                 .FirstOrDefault(k => k.Id == koolitusId);
 
-            if (koolitus == null) return HttpNotFound();
+            if (koolitus == null)
+                return HttpNotFound();
 
             string userId = User.Identity.GetUserId();
 
-            bool already = db.Registreerimised.Any(r => r.KoolitusId == koolitusId && r.ApplicationUserId == userId);
+            bool already = db.Registreerimised
+                .Any(r => r.KoolitusId == koolitusId && r.ApplicationUserId == userId);
+
             if (already)
             {
-                ModelState.AddModelError("", "Sa oled juba selle kursuse jaoks registreerinud.");
-                return View(new Registreerimine { KoolitusId = koolitusId });
+                TempData["Msg"] = "Sa oled juba selle kursuse jaoks registreerinud.";
+                return RedirectToAction("Details", "Koolitus", new { id = koolitusId });
             }
+
             int approved = db.Registreerimised
-    .Count(r => r.KoolitusId == koolitusId
-             && r.Staatus == RegistreerimineStaatus.Approved);
+                .Count(r => r.KoolitusId == koolitusId &&
+                            r.Staatus == RegistreerimineStaatus.Approved);
 
             if (approved >= koolitus.MaxOsalejaid)
             {
-                ModelState.AddModelError("", "GRUPP TÄIS. Registreerimine pole võimalik.");
-                return View(new Registreerimine { KoolitusId = koolitusId });
+                TempData["Msg"] = "GRUPP TÄIS. Registreerimine pole võimalik.";
+                return RedirectToAction("Details", "Koolitus", new { id = koolitusId });
             }
 
             var reg = new Registreerimine
@@ -116,11 +106,11 @@ namespace Kool.Controllers
             };
 
             db.Registreerimised.Add(reg);
-
             db.SaveChanges();
 
-            TempData["msg"] = "Registreerimine saadetud. Ootab kinnitamist.";
-            return RedirectToAction("MinuKoolitused");
+            TempData["Msg"] = "Registreerimine saadetud. Ootab kinnitamist.";
+
+            return RedirectToAction("MinuKoolitused", "Koolitus");
         }
 
         [Authorize(Roles = "Admin,Opetaja")]
@@ -207,54 +197,6 @@ namespace Kool.Controllers
             return RedirectToAction("Registrations", "Koolitus", new { id = reg.KoolitusId });
         }
 
-        [Authorize(Roles = "Admin")]
-        public ActionResult Edit(int? id)
-        {
-            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            var reg = db.Registreerimised.Find(id);
-            if (reg == null) return HttpNotFound();
-
-            return View(reg);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public ActionResult Edit([Bind(Include = "Id,KoolitusId,ApplicationUserId,Staatus")] Registreerimine reg)
-        {
-            if (!ModelState.IsValid) return View(reg);
-
-            db.Entry(reg).State = EntityState.Modified;
-            db.SaveChanges();
-
-            return RedirectToAction("Index");
-        }
-
-        [Authorize(Roles = "Admin")]
-        public ActionResult Delete(int? id)
-        {
-            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            var reg = db.Registreerimised.Find(id);
-            if (reg == null) return HttpNotFound();
-
-            return View(reg);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            var reg = db.Registreerimised.Find(id);
-            if (reg == null) return HttpNotFound();
-
-            db.Registreerimised.Remove(reg);
-            db.SaveChanges();
-
-            return RedirectToAction("Index");
-        }
 
         protected override void Dispose(bool disposing)
         {

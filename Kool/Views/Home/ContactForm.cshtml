@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Kontakt";
+}
+
+<h2>Saada kiri</h2>
+
+@using (Html.BeginForm("SendEmail", "Home", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div>
+        <label>Sinu email</label>
+        <input type="email" name="email" required />
+    </div>
+
+    <div>
+        <label>Teema</label>
+        <input type="text" name="subject" required />
+    </div>
+
+    <div>
+        <label>Sõnum</label>
+        <textarea name="message" rows="5" required></textarea>
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-success">
+        Saada
+    </button>
+}

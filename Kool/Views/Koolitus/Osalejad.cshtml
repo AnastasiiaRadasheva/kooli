@@ -16,6 +16,8 @@
         <th>Kasutajanimi</th>
         <th>E-mail</th>
         <th>Staatus</th>
+        <th>Tegevused</th>
+
     </tr>
 
     @foreach (var item in Model)
@@ -24,12 +26,48 @@
             <td>@item.ApplicationUser.UserName</td>
             <td>@item.ApplicationUser.Email</td>
             <td><span class="label label-success">@item.Staatus</span></td>
+
             <td>
+
+                @if (User.IsInRole("Admin") || User.IsInRole("Opetaja"))
+                {
+                    @Html.ActionLink(
+                        "Kirjuta",
+                        "WriteToStudent",
+                        "Koolitus",
+                        new { email = item.ApplicationUser.Email },
+                        new { @class = "btn btn-info btn-sm" }
+                    )
+                }
+
+                @if (User.IsInRole("Admin") )
+                {
+                    <form method="post" action="@Url.Action("RemoveParticipant","Koolitus")">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@item.Id" />
+
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            Eemalda
+                        </button>
+                    </form>
+                }
+
             </td>
         </tr>
     }
 </table>
-
+@if (User.IsInRole("Admin") || User.IsInRole("Opetaja"))
+{
+    <div style="margin-top:20px;">
+        @Html.ActionLink(
+            "Saada kiri kogu grupile",
+            "WriteToGroup",
+            "Koolitus",
+            new { id = ViewBag.KoolitusId },
+            new { @class = "btn btn-primary" }
+        )
+    </div>
+}
 @if (User.IsInRole("Admin"))
 {
     <div>

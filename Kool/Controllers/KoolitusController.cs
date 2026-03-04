@@ -219,7 +219,6 @@ namespace Kool.Controllers
             if (koolitus == null)
                 return HttpNotFound();
 
-            // Если это учитель — проверяем, что курс его
             if (User.IsInRole("Opetaja"))
             {
                 if (koolitus.Opetaja == null || koolitus.Opetaja.ApplicationUserId != userId)
@@ -230,13 +229,11 @@ namespace Kool.Controllers
                 .Include(r => r.ApplicationUser)
                 .Where(r => r.KoolitusId == id);
 
-            // 🔹 Если это учитель — показываем только Approved
             if (User.IsInRole("Opetaja"))
             {
                 query = query.Where(r => r.Staatus == RegistreerimineStaatus.Approved);
             }
 
-            // 🔹 Admin видит ВСЕ статусы (без фильтра)
 
             var osalejad = query
                 .OrderBy(r => r.ApplicationUser.UserName)
@@ -249,25 +246,15 @@ namespace Kool.Controllers
 
 
         [Authorize(Roles = "Admin,Opetaja")]
-        public ActionResult GroupEmail(int koolitusId)
+        public ActionResult WriteToStudent(string email)
         {
-            ViewBag.KoolitusId = koolitusId;
+            ViewBag.Email = email;
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Opetaja")]
-        public ActionResult SendGroupEmail(int koolitusId, string subject, string message)
-        {
-            TempData["Msg"] = "METOOD KÄIVITUS. ID=" + koolitusId;
-            return RedirectToAction("MinuKoolitused");
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Opetaja")]
-        public ActionResult SendPersonalEmail(string email, string subject, string message, int returnId)
+        public ActionResult SendPersonalEmail(string email, string subject, string message)
         {
             try
             {
@@ -275,17 +262,22 @@ namespace Kool.Controllers
                 WebMail.SmtpPort = 587;
                 WebMail.EnableSsl = true;
                 WebMail.UserName = "eha20082@gmail.com";
-                WebMail.Password = "----";
+                WebMail.Password = "iakc rgui tmxd erwf";
 
-                WebMail.Send(to: email, subject: subject, body: message);
-                TempData["Msg"] = "Kiri on saadetud kasutajale " + email;
+                WebMail.Send(
+                    to: email,
+                    subject: subject,
+                    body: message
+                );
+
+                TempData["Msg"] = "Kiri saadetud kasutajale " + email;
             }
             catch (Exception ex)
             {
                 TempData["Msg"] = "Viga: " + ex.Message;
             }
 
-            return RedirectToAction("Osalejad", new { id = returnId });
+            return RedirectToAction("IndexK");
         }
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
@@ -316,9 +308,6 @@ namespace Kool.Controllers
         {
             string userId = User.Identity.GetUserId();
 
-            // =========================
-            // ADMIN – видит ВСЕ курсы
-            // =========================
             if (User.IsInRole("Admin"))
             {
                 var all = db.Koolitused
@@ -337,9 +326,6 @@ namespace Kool.Controllers
                 return View(all);
             }
 
-            // =========================
-            // OPETAJA – только свои курсы
-            // =========================
             if (User.IsInRole("Opetaja"))
             {
                 var minu = db.Koolitused
@@ -359,9 +345,6 @@ namespace Kool.Controllers
                 return View(minu);
             }
 
-            // =========================
-            // OPILANE – куда записан
-            // =========================
             var koolitusIds = db.Registreerimised
                 .Where(r => r.ApplicationUserId == userId)
                 .Select(r => r.KoolitusId)
@@ -395,9 +378,77 @@ namespace Kool.Controllers
 
             return View(listOpilane);
         }
+        [HttpGet]
+        public ActionResult RemoveParticipant()
+        {
+            return Content("GET METHOD");
+        }
 
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public ActionResult RemoveParticipant(int id)
+        {
 
+            var reg = db.Registreerimised.Find(id);
+
+            if (reg == null)
+                return HttpNotFound();
+
+            int koolitusId = reg.KoolitusId;
+
+            db.Registreerimised.Remove(reg);
+            db.SaveChanges();
+
+            TempData["Msg"] = "Osaleja eemaldatud kursuselt.";
+
+            return RedirectToAction("Osalejad", new { id = koolitusId });
+        }
+
+        [Authorize(Roles = "Admin,Opetaja")]
+        public ActionResult WriteToGroup(int id)
+        {
+            ViewBag.KoolitusId = id;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Opetaja")]
+        public ActionResult SendGroupEmail(int koolitusId, string subject, string message)
+        {
+            var emails = db.Registreerimised
+                .Where(r => r.KoolitusId == koolitusId && r.Staatus == RegistreerimineStaatus.Approved)
+                .Select(r => r.ApplicationUser.Email)
+                .ToList();
+
+            try
+            {
+                WebMail.SmtpServer = "smtp.gmail.com";
+                WebMail.SmtpPort = 587;
+                WebMail.EnableSsl = true;
+                WebMail.UserName = "eha20082@gmail.com";
+                WebMail.Password = "iakc rgui tmxd erwf";
+
+                foreach (var email in emails)
+                {
+                    WebMail.Send(
+                        to: email,
+                        subject: subject,
+                        body: message
+                    );
+                }
+
+                TempData["Msg"] = "Kiri saadetud kogu grupile!";
+            }
+            catch (Exception ex)
+            {
+                TempData["Msg"] = "Viga: " + ex.Message;
+            }
+
+            return RedirectToAction("Osalejad", new { id = koolitusId });
+        }
         [AllowAnonymous]
         public ActionResult ByOpetaja1(int id)
         {

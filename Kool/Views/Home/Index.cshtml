@@ -14,13 +14,14 @@
                 <p>Alusta oma teekonda juba täna!</p>
                 <div class="d-grid gap-2 d-md-block">
                     <a href="@Url.Action("Register", "Account")" class="btn btn-light btn-lg px-4 me-md-2">Registreeru õpilaseks</a>
-                    <a href="@Url.Action("IndexK", "Koolitus")" class="btn btn-outline-light btn-lg px-4">Vaata koolitusi</a>
+                    <a href="@Url.Action("Index", "Keelekursus")" class="btn btn-outline-light btn-lg px-4">Vaata keelekursused</a>
                 </div>
             }
             else
             {
                 <p class="fs-5">Oled sisse logitud. Head õppimist!</p>
-                <a href="@Url.Action("Keelekursused", "Index", "Keelekursus")" class="btn btn-light btn-lg px-4">Mine kursuste nimekirja</a>
+                <li>@Html.ActionLink("Keelekursused", "Index", "Keelekursus", new { area = "" }, new { @class = "nav-link" })</li>
+                <li>@Html.ActionLink("Kõik koolitused", "indexK", "Koolitus", new { area = "" }, new { @class = "nav-link" })</li>
             }
         </div>
     </section>
@@ -39,8 +40,6 @@
                     <p><span class="badge bg-success">Eesti keel</span> <span class="badge bg-info">Inglise keel</span> <span class="badge bg-danger">Saksa keel</span></p>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-
-                    <li>@Html.ActionLink("Loe õppekavadest", "Index", "Keelekursus", new { area = "" }, new { @class = "nav-link" })</li>
 
                 </div>
             </div>
@@ -78,8 +77,13 @@
 
     <div class="mt-5 p-4 bg-light rounded shadow-sm text-center">
         <h3>Kas otsite koolitust enda jaoks?</h3>
-        <p class="text-muted">Koostame personaalse pakkumise vastavalt teie vajadustele ja valdkonnale.(Võite registreeruda esimesele 
-        tasuta tunnile, et selgitada välja oma keeleoskus ja alustada õpinguid!)</p>
-        <a href="mailto:info@edusamm.ee" class="btn btn-dark px-4">Võta ühendust</a>
+        <p class="text-muted">
+            Koostame personaalse pakkumise vastavalt teie vajadustele ja valdkonnale.(Võite registreeruda esimesele
+            tasuta tunnile, et selgitada välja oma keeleoskus ja alustada õpinguid!)
+        </p>
+        <a href="@Url.Action("ContactForm", "Home")" class="btn btn-primary">
+            Saada kiri
+        </a>
+       
     </div>
 </main>

@@ -1,0 +1,24 @@
+﻿<h2>Saada kiri</h2>
+
+@using (Html.BeginForm("SendPersonalEmail", "Koolitus", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="email" value="@ViewBag.Email" />
+
+    <div>
+        <label>Teema</label>
+        <input type="text" name="subject" class="form-control" />
+    </div>
+
+    <div>
+        <label>Sõnum</label>
+        <textarea name="message" class="form-control"></textarea>
+    </div>
+
+    <br />
+
+    <button class="btn btn-success">
+        Saada kiri
+    </button>
+}

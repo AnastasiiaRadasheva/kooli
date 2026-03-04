@@ -2,85 +2,69 @@
 
 @{
     ViewBag.Title = "Kursused";
+    var grouped = Model.GroupBy(k => k.Keel);
 }
 
-<div class="row" style="margin-top:20px;">
-    <div class="col-md-6">
-        <h2>Keelekursuste nimekiri</h2>
-    </div>
-   
-</div>
-<div class="col-md-6 text-right">
-    @if (User.IsInRole("Admin"))
-    {
-        @Html.ActionLink("+ Lisa uus kursus", "Create", null, new { @class = "btn btn-success" })
-    }
-</div>
-<table class="table table-hover">
-    <thead>
-        <tr class="active">
-            <th>Kursuse nimetus</th>
-            <th>Keel</th>
-            <th>Tase</th>
-            <th>Kirjeldus</th>
-            <th class="text-right">Tegevused</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td style="font-weight:bold; vertical-align:middle;">
-                    @item.Nimetus
-                </td>
-                <td style="vertical-align:middle;">
-                    @{
-                        var keel = item.Keel.ToLower();
-                        if (keel.Contains("eesti"))
-                        { <span>🇪🇪</span> }
-                        else if (keel.Contains("inglise"))
-                        { <span>🇬🇧</span> }
-                        else if (keel.Contains("saksa"))
-                        { <span>🇩🇪</span> }
-                        else if (keel.Contains("vene"))
-                        { <span>🇷🇺</span> }
-                        else if (keel.Contains("soome"))
-                        { <span>🇫🇮</span> }
-                        else if (keel.Contains("prantsuse"))
-                        { <span>🇫🇷</span> }
-                        else if (keel.Contains("hispaania"))
-                        { <span>🇪🇸</span> }
-                        else
-                        { <span>🌐</span> }
-                    }
-                    @item.Keel
-                </td>
-                <td style="vertical-align:middle;">
-                    @{
-                        var silt = "label-default";
-                        if (item.Tase.Contains("A")) { silt = "label-success"; }
-                        else if (item.Tase.Contains("B")) { silt = "label-warning"; }
-                        else if (item.Tase.Contains("C")) { silt = "label-danger"; }
-                    }
-                    <span class="label @silt" style="font-size: 0.9em; padding: 5px 10px;">@item.Tase</span>
-                </td>
-                <td class="small text-muted" style="vertical-align:middle;">
-                    @item.Kirjeldus
-                </td>
-                <td class="text-right" style="vertical-align:middle;">
-                    <div class="btn-group">
-                        @Html.ActionLink("Vaata koolitusi", "ByKeelekursus", "Koolitus", new { id = item.Id }, new { @class = "btn btn-info btn-sm" })
+<h2>Keelekursused</h2>
+
+@if (User.IsInRole("Admin"))
+{
+    @Html.ActionLink("+ Lisa uus kursus", "Create", null, new { @class = "btn btn-success", style = "margin-bottom:20px;" })
+}
+
+@foreach (var group in grouped)
+{
+    var keel = group.Key.ToLower();
+    var flag = "";
+
+    if (keel.Contains("eesti")) { flag = "🇪🇪"; }
+    else if (keel.Contains("inglise")) { flag = "🇬🇧"; }
+    else if (keel.Contains("saksa")) { flag = "🇩🇪"; }
+
+    <div class="panel panel-default" style="padding:20px; margin-bottom:25px;">
+
+        <h3 style="margin-top:0;">@flag @group.Key</h3>
+
+        <div class="row">
+
+            @foreach (var item in group)
+            {
+                <div class="col-md-4">
+
+                    <div style="
+                        border:1px solid #ddd;
+                        padding:20px;
+                        text-align:center;
+                        border-radius:8px;
+                        margin-bottom:10px;
+                        background:#f9f9f9;">
+
+                        <h2 style="margin-top:0;">@item.Tase</h2>
+
+                        <p class="small text-muted">
+                            @item.Kirjeldus
+                        </p>
+
+                        @Html.ActionLink(
+                            "Vaata koolitusi",
+                            "ByKeelekursus",
+                            "Koolitus",
+                            new { id = item.Id },
+                            new { @class = "btn btn-primary btn-sm" })
 
                         @if (User.IsInRole("Admin"))
                         {
-                            @Html.ActionLink("Muuda", "Edit", new { id = item.Id }, new { @class = "btn btn-default btn-sm" })
-                            @Html.ActionLink("Kustuta", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-sm" })
+                            <div style="margin-top:10px;">
+                                @Html.ActionLink("Muuda", "Edit", new { id = item.Id }, new { @class = "btn btn-default btn-xs" })
+                                @Html.ActionLink("Kustuta", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-xs" })
+                            </div>
                         }
+
                     </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
+                </div>
+            }
 
+        </div>
+    </div>
+}
