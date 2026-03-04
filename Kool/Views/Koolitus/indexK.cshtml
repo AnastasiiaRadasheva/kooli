@@ -18,6 +18,7 @@
         @Html.ActionLink("+ Lisa uus koolitus", "Create", null, new { @class = "btn btn-success" })
     }
 </div>
+
 <div class="well">
     <form action="@Url.Action("IndexK", "Koolitus")" method="get" class="form-inline">
         <input type="text" name="keel" class="form-control" placeholder="Otsi keelt..." value="@Request.QueryString["keel"]" />
@@ -26,8 +27,10 @@
         <a href="@Url.Action("IndexK")" class="btn btn-default">Tühjenda</a>
     </form>
 </div>
+
 <table class="table table-hover">
     <div class="row">
+
         @foreach (var item in Model)
         {
             int approved = 0;
@@ -35,8 +38,6 @@
             {
                 approved = approvedCounts[item.Id];
             }
-
-  
 
             int ootel = 0;
             if (pendingCounts != null && pendingCounts.ContainsKey(item.Id))
@@ -46,12 +47,39 @@
 
             bool onTais = approved >= item.MaxOsalejaid;
 
+            // Флаг языка
+            var keel = item.Keelekursus?.Keel?.ToLower() ?? "";
+            var flag = "";
+
+            if (keel.Contains("eesti")) { flag = "🇪🇪"; }
+            else if (keel.Contains("inglise")) { flag = "🇬🇧"; }
+            else if (keel.Contains("saksa")) { flag = "🇩🇪"; }
+            else if (keel.Contains("vene")) { flag = "🇷🇺"; }
+
             <div class="col-md-4" style="margin-bottom:25px;">
                 <div class="card shadow-sm" style="padding:20px; border-radius:10px; height:100%;">
 
-                    <h3 style="margin-top:0;">
-                        @(item.Keelekursus != null ? item.Keelekursus.Nimetus : "Kursus puudub")
-                    </h3>
+                   <h3 style="margin-top:0;">
+
+                       @if (item.Keelekursus != null)
+                       {
+                           if (item.Keelekursus.Keel.Contains("Eesti"))
+                           {
+                               <img src="~/Content/flags/ee.png" width="24" style="margin-right:6px;" />
+                           }
+                           else if (item.Keelekursus.Keel.Contains("Inglise"))
+                           {
+                               <img src="~/Content/flags/gb.png" width="24" style="margin-right:6px;" />
+                           }
+                           else if (item.Keelekursus.Keel.Contains("Saksa"))
+                           {
+                               <img src="~/Content/flags/de.png" width="24" style="margin-right:6px;" />
+                           }
+                       }
+
+                       @(item.Keelekursus != null ? item.Keelekursus.Nimetus : "Kursus puudub")
+
+                   </h3>
 
                     <p>
                         <strong>Õpetaja:</strong>
@@ -146,5 +174,6 @@
                 </div>
             </div>
         }
+
     </div>
 </table>

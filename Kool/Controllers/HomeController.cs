@@ -46,7 +46,7 @@ namespace Kool.Controllers
                 TempData["Msg"] = "Viga: " + ex.Message;
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("ContactForm");
         }
         public ActionResult About()
         {

@@ -4,28 +4,45 @@
 
 <h2>Saada kiri</h2>
 
-@using (Html.BeginForm("SendEmail", "Home", FormMethod.Post))
+@if (TempData["Msg"] != null)
 {
-    @Html.AntiForgeryToken()
-
-    <div>
-        <label>Sinu email</label>
-        <input type="email" name="email" required />
+    <div class="alert alert-success">
+        @TempData["Msg"]
     </div>
-
-    <div>
-        <label>Teema</label>
-        <input type="text" name="subject" required />
-    </div>
-
-    <div>
-        <label>Sõnum</label>
-        <textarea name="message" rows="5" required></textarea>
-    </div>
-
-    <br />
-
-    <button type="submit" class="btn btn-success">
-        Saada
-    </button>
 }
+
+<div class="row">
+    <div class="col-md-6">
+
+        @using (Html.BeginForm("SendEmail", "Home", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label>Sinu email</label>
+                <input type="email" name="email" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+                <label>Teema</label>
+                <input type="text" name="subject" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+                <label>Sõnum</label>
+                <textarea name="message" rows="5" class="form-control" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">
+                Saada
+            </button>
+        }
+
+        <br />
+
+        <p>
+            @Html.ActionLink("← Tagasi", "Index", null, new { @class = "btn btn-default" })
+        </p>
+
+    </div>
+</div>
