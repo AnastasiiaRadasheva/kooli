@@ -47,14 +47,6 @@
 
             bool onTais = approved >= item.MaxOsalejaid;
 
-            // Флаг языка
-            var keel = item.Keelekursus?.Keel?.ToLower() ?? "";
-            var flag = "";
-
-            if (keel.Contains("eesti")) { flag = "🇪🇪"; }
-            else if (keel.Contains("inglise")) { flag = "🇬🇧"; }
-            else if (keel.Contains("saksa")) { flag = "🇩🇪"; }
-            else if (keel.Contains("vene")) { flag = "🇷🇺"; }
 
             <div class="col-md-4" style="margin-bottom:25px;">
                 <div class="card shadow-sm" style="padding:20px; border-radius:10px; height:100%;">

@@ -221,22 +221,7 @@ namespace Kool.Controllers
             return RedirectToAction("Index");
         }
 
-        [AllowAnonymous]
-        public ActionResult ByOpetaja(int id)
-        {
-            var opetaja = db.Opetajad.Find(id);
-            if (opetaja == null)
-                return HttpNotFound();
 
-            var koolitused = db.Koolitused
-                .Include(k => k.Keelekursus)
-                .Where(k => k.OpetajaId == id)
-                .ToList();
-
-            ViewBag.OpetajaNimi = opetaja.Nimi;
-
-            return View(koolitused);
-        }
         protected override void Dispose(bool disposing)
         {
             if (disposing) db.Dispose();

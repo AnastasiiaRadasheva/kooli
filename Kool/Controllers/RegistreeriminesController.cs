@@ -1,5 +1,6 @@
 ﻿using Kool.Models;
 using Microsoft.AspNet.Identity;
+using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -126,11 +127,9 @@ namespace Kool.Controllers
 
             return View(pending);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Opetaja")]
-
+        [Authorize(Roles = "Admin")]
         public ActionResult Approve(int id)
         {
             var reg = db.Registreerimised
@@ -155,23 +154,39 @@ namespace Kool.Controllers
                     WebMail.Password = "iakc rgui tmxd erwf";
                     WebMail.From = "eha20082@gmail.com";
 
+                    string keel = reg.Koolitus.Keelekursus.Keel.ToLower();
+                    string foto = "";
+
+                    if (keel.Contains("eesti"))
+                        foto = "eesti.png";
+                    else if (keel.Contains("inglise"))
+                        foto = "inglise.png";
+                    else if (keel.Contains("saksa"))
+                        foto = "saksa.png";
+
+                    string failiTee = Server.MapPath("~/Content/flags/" + foto);
+
                     string sisu = $@"
-                <h2>Tere, {reg.ApplicationUser.UserName}!</h2>
-                <p>Teid on vastu võetud kursusele: <b>{reg.Koolitus.Keelekursus.Nimetus}</b>.</p>
-                <p>Kursus algab: {reg.Koolitus.AlgusKuupaev.ToShortDateString()}</p>
-                <br/>
-                <p>Parimate soovidega, Kooli administratsioon</p>";
+<h2>Tere, {reg.ApplicationUser.UserName}!</h2>
+
+<p>Teid on vastu võetud kursusele: 
+<b>{reg.Koolitus.Keelekursus.Nimetus}</b>.</p>
+
+<p>Kursus algab: {reg.Koolitus.AlgusKuupaev.ToShortDateString()}</p>
+
+<br/>
+<p>Parimate soovidega,<br/>Kooli administratsioon</p>";
 
                     WebMail.Send(
                         to: reg.ApplicationUser.Email,
                         subject: "Kinnitus: " + reg.Koolitus.Keelekursus.Nimetus,
                         body: sisu,
-                        isBodyHtml: true
+                        isBodyHtml: true,
+                        filesToAttach: new string[] { failiTee } 
                     );
-
                     TempData["msg"] = "Kasutaja on kinnitatud ja e-kiri saadetud!";
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
                     TempData["msg"] = "Kinnitatud, kuid e-kirja viga: " + ex.Message;
                 }
@@ -182,7 +197,7 @@ namespace Kool.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Opetaja")]
+        [Authorize(Roles = "Admin")]
         public ActionResult Reject(int id)
         {
             var reg = db.Registreerimised.Find(id);

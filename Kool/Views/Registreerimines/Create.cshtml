@@ -6,6 +6,10 @@
 
 <h2>Registreeru</h2>
 
+<div class="alert alert-info">
+    Kas soovid registreeruda sellele koolitusele?
+</div>
+
 @using (Html.BeginForm("Create", "Registreerimines", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
@@ -14,10 +18,11 @@
 
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-    <p>Kas soovid registreeruda sellele koolitusele?</p>
+    <button type="submit" class="btn btn-success">
+        Registreeru
+    </button>
 
-    <button type="submit" class="btn btn-primary">Registreeru</button>
-    @Html.ActionLink("Tagasi", "IndexK", "Koolitus", new { id = Model.KoolitusId }, null)
+    @Html.ActionLink("Tagasi", "IndexK", "Koolitus", null, new { @class = "btn btn-default" })
 }
 
 @section Scripts {

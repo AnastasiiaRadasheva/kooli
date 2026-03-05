@@ -1,78 +1,71 @@
 ﻿@model Kool.Models.Koolitus
 
 @{
-    ViewBag.Title = "Üksikasjad";
+    ViewBag.Title = "Koolituse üksikasjad";
 }
 
-<h2>Üksikasjad</h2>
+<div class="container" style="margin-top:30px;">
 
-<div>
-    <h4>Koolitus</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.KeelekursusId)
-        </dt>
+    <div class="panel panel-default" style="padding:25px; border-radius:10px;">
 
-        <dd>
-            @Html.DisplayFor(model => model.KeelekursusId)
-        </dd>
+        <h2 style="margin-top:0;">
+            @(Model.Keelekursus != null ? Model.Keelekursus.Nimetus : "Kursus")
+        </h2>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.OpetajaId)
-        </dt>
+        <p class="text-muted">
+            @(Model.Keelekursus != null ? Model.Keelekursus.Kirjeldus : "")
+        </p>
 
-        <dd>
-            @Html.DisplayFor(model => model.OpetajaId)
-        </dd>
+        <hr />
 
-        <dt>
-            @Html.DisplayNameFor(model => model.AlgusKuupaev)
-        </dt>
+        <p>
+            <strong>Keel:</strong>
+            @(Model.Keelekursus != null ? Model.Keelekursus.Keel : "-")
+        </p>
 
-        <dd>
-            @Html.DisplayFor(model => model.AlgusKuupaev)
-        </dd>
+        <p>
+            <strong>Tase:</strong>
+            @(Model.Keelekursus != null ? Model.Keelekursus.Tase : "-")
+        </p>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.LoppKuupaev)
-        </dt>
+        <p>
+            <strong>Õpetaja:</strong>
+            @(Model.Opetaja != null ? Model.Opetaja.Nimi : "Määramata")
+        </p>
 
-        <dd>
-            @Html.DisplayFor(model => model.LoppKuupaev)
-        </dd>
+        <p>
+            <strong>Algus:</strong>
+            @Model.AlgusKuupaev.ToString("dd.MM.yyyy")
+        </p>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Hind)
-        </dt>
+        <p>
+            <strong>Lõpp:</strong>
+            @Model.LoppKuupaev.ToString("dd.MM.yyyy")
+        </p>
 
-        <dd>
-            @Html.DisplayFor(model => model.Hind)
-        </dd>
+        <p>
+            <strong>Hind:</strong>
+            <span style="font-size:18px; color:#28a745;">
+                @Model.Hind €
+            </span>
+        </p>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.MaxOsalejaid)
-        </dt>
+        <p>
+            <strong>Max osalejaid:</strong>
+            @Model.MaxOsalejaid
+        </p>
 
-        <dd>
-            @Html.DisplayFor(model => model.MaxOsalejaid)
-        </dd>
-    </dl>
+    </div>
+
+    <div style="margin-top:20px;">
+
+        @if (User.IsInRole("Admin"))
+        {
+            @Html.ActionLink("Muuda", "Edit", new { id = Model.Id }, new { @class = "btn btn-warning" })
+        }
+
+        @Html.ActionLink("Tagasi", "IndexK", "Koolitus", null, new { @class = "btn btn-default" })
+
+    </div>
+
 </div>
-
-<p>
-    @if (User.IsInRole("Admin"))
-    {
-        @Html.ActionLink("Muuda", "Edit", new { id = Model.Id })
-        <span> | </span>
-    }
-
-    @if (User.IsInRole("Admin"))
-    {
-        @Html.ActionLink("Tagasi nimekirja", "IndexK")
-    }
-    else
-    {
-        @Html.ActionLink("Tagasi nimekirja", "IndexK", "Koolitus")
-    }
-</p>

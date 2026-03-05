@@ -35,15 +35,10 @@ namespace Kool.Controllers
                 .Where(k => k.OpetajaId == id)
                 .ToList();
 
-            ViewBag.PendingCounts = db.Registreerimised
-                .Where(r => r.Staatus == RegistreerimineStaatus.Pending)
-                .GroupBy(r => r.KoolitusId)
-                .ToDictionary(g => g.Key, g => g.Count());
-
             LoadCounts();
-            return View("IndexK", list); 
-        }
 
+            return View("IndexK", list);
+        }
         [AllowAnonymous]
         public ActionResult IndexK(string keel, string nimi)
         {
@@ -58,15 +53,7 @@ namespace Kool.Controllers
             if (!string.IsNullOrEmpty(nimi))
                 andmed = andmed.Where(x => x.Opetaja.Nimi.Contains(nimi));
 
-            ViewBag.PendingCounts = db.Registreerimised
-                .Where(r => r.Staatus == RegistreerimineStaatus.Pending)
-                .GroupBy(r => r.KoolitusId)
-                .ToDictionary(g => g.Key, g => g.Count());
-
-            ViewBag.ApprovedCounts = db.Registreerimised
-                .Where(r => r.Staatus == RegistreerimineStaatus.Approved)
-                .GroupBy(r => r.KoolitusId)
-                .ToDictionary(g => g.Key, g => g.Count());
+            LoadCounts();
 
             return View(andmed.ToList());
         }
@@ -95,35 +82,6 @@ namespace Kool.Controllers
             return View(regs);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public ActionResult Register(int koolitusId)
-        {
-            string userId = User.Identity.GetUserId();
-
-            bool exists = db.Registreerimised.Any(r =>
-                r.KoolitusId == koolitusId && r.ApplicationUserId == userId);
-
-            if (!exists)
-            {
-                db.Registreerimised.Add(new Registreerimine
-                {
-                    KoolitusId = koolitusId,
-                    ApplicationUserId = userId,
-                    Staatus = RegistreerimineStaatus.Pending
-                });
-
-                db.SaveChanges();
-                TempData["Msg"] = "Taotlus saadetud. Oota Admin kinnitust.";
-            }
-            else
-            {
-                TempData["Msg"] = "Sul on juba olemas taotlus (või oled juba registreeritud).";
-            }
-
-            return RedirectToAction("Details", new { id = koolitusId });
-        }
 
         [Authorize(Roles = "Admin")]
         public ActionResult Create()
@@ -449,17 +407,10 @@ namespace Kool.Controllers
 
             return RedirectToAction("Osalejad", new { id = koolitusId });
         }
-        [AllowAnonymous]
-        public ActionResult ByOpetaja1(int id)
-        {
-            var list = db.Koolitused
-        .Include(k => k.Keelekursus)
-        .Include(k => k.Opetaja)
-        .Where(k => k.OpetajaId == id)
-        .ToList();
-            LoadCounts();
-            return View("IndexK", list);
-        }
+        [AllowAnonymous] public ActionResult ByOpetaja1(int id) 
+        { var list = db.Koolitused.Include(k => k.Keelekursus).Include(k => k.Opetaja).Where(k => k.OpetajaId == id).ToList(); 
+            LoadCounts(); 
+            return View("IndexK", list); }
         protected override void Dispose(bool disposing)
         {
             if (disposing) db.Dispose();
