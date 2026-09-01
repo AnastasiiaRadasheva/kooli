@@ -1,6 +1,6 @@
 #  KeelteKooli
 
-A language course management app built with **C#** and **Windows Forms**. The project started as a graduation thesis (lõputöö), aimed at building a simple, reliable desktop app for managing language courses, teachers, and student enrollments — without the overhead of a full web or cloud setup.
+A language course management app built with **C#** . The project started as a graduation thesis (lõputöö), aimed at building a simple, reliable desktop app for managing language courses, teachers, and student enrollments — without the overhead of a full web or cloud setup.
 
 ##  What it does
 
@@ -11,12 +11,11 @@ Small schools and language course providers don't always need a big web platform
 - view and manage **student enrollments** for each course
 - do all of this through a straightforward Windows Forms interface, with data stored in a local database
 
-## 🛠️ Tech stack
+##  Tech stack
 
 | Technology | Purpose |
 |---|---|
 | **C#** | application logic |
-| **Windows Forms** | user interface |
 | **Entity Framework Core** (Code First) | data model & database access |
 | **LocalDB** | local database for development and testing |
 | **EF Core Migrations** | database schema versioning |
@@ -36,7 +35,7 @@ Data Access (DbContext, repositories)
 
 Each layer sticks to its own job — the forms don't know anything about the database, and the business logic doesn't know anything about the forms. That makes the code easier to test and change.
 
-## 🗂️ Data model
+##  Data model
 
 Three main entities:
 
