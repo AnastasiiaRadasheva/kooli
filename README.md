@@ -1,77 +1,77 @@
 #  KeelteKooli
 
-Keelekursuste haldamise rakendus, mis on tehtud **C#** ja **Windows Forms** abil. Projekt on valminud lõputööna ning selle eesmärk on pakkuda lihtsat ja töökindlat lauarakendust, millega saab hallata keelekursuseid, õpetajaid ja õpilaste registreerimisi — ilma keeruka veebi- või pilvetaristuta.
+A language course management app built with **C#** and **Windows Forms**. The project started as a graduation thesis (lõputöö), aimed at building a simple, reliable desktop app for managing language courses, teachers, and student enrollments — without the overhead of a full web or cloud setup.
 
-##  Mida see teeb
+##  What it does
 
-Väiksemad koolid ja keelekursuste pakkujad ei vaja alati suurt veebisüsteemi — sageli piisab lihtsast kohalikust rakendusest. Kooli võimaldabki:
+Small schools and language course providers don't always need a big web platform — often a simple local app is enough. Kooli lets you:
 
-- lisada, muuta ja kustutada **keelekursuseid**
-- hallata **õpetajate** andmeid
-- vaadata ja hallata **õpilaste registreerimisi** kursustele
-- kõike seda mugavas Windows Forms liideses, andmed salvestuvad kohalikku andmebaasi
+- add, edit, and delete **language courses**
+- manage **teacher** records
+- view and manage **student enrollments** for each course
+- do all of this through a straightforward Windows Forms interface, with data stored in a local database
 
-##  Tehnoloogiad
+## 🛠️ Tech stack
 
-| Tehnoloogia | Kasutuseesmärk |
+| Technology | Purpose |
 |---|---|
-| **C#** | rakenduse loogika |
-| **Windows Forms** | kasutajaliides |
-| **Entity Framework Core** (Code First) | andmemudel ja andmebaasi haldus |
-| **LocalDB** | kohalik andmebaas arenduseks ja testimiseks |
-| **EF Core Migrations** | andmebaasi skeemi versioonihaldus |
-| **Visual Studio** | arenduskeskkond |
+| **C#** | application logic |
+| **Windows Forms** | user interface |
+| **Entity Framework Core** (Code First) | data model & database access |
+| **LocalDB** | local database for development and testing |
+| **EF Core Migrations** | database schema versioning |
+| **Visual Studio** | development environment |
 
-##  Arhitektuur
+##  Architecture
 
-Rakendus on üles ehitatud kolmekihiliselt, et kood oleks selge ja hooldatav:
+The app follows a three-layer architecture to keep the code clean and maintainable:
 
 ```
 Presentation (Windows Forms)
         ↓
-Business Logic (teenused, valideerimine)
+Business Logic (services, validation)
         ↓
-Data Access (DbContext, repository)
+Data Access (DbContext, repositories)
 ```
 
-Iga kiht vastutab oma osa eest — vorm ei tea andmebaasist midagi, äriloogika ei tea vormidest midagi. See teeb koodi lihtsamini testitavaks ja muudetavaks.
+Each layer sticks to its own job — the forms don't know anything about the database, and the business logic doesn't know anything about the forms. That makes the code easier to test and change.
 
-##  Andmemudel
+## 🗂️ Data model
 
-Kolm peamist olemit:
+Three main entities:
 
-- **Keelekursus** — nimetus, keel, tase, kirjeldus
-- **Õpetaja** — eesnimi, perekonnanimi, e-mail, telefon
-- **Registreerimine** — õpilase nimi, kuupäev, seotud kursus
+- **Course** — name, language, level, description
+- **Teacher** — first name, last name, email, phone
+- **Enrollment** — student name, date, related course
 
-Üks õpetaja võib vedada mitut kursust, ühel kursusel võib olla mitu registreerimist.
+One teacher can run multiple courses, and one course can have multiple enrollments.
 
-##  Repo struktuur
+##  Repo structure
 
 ```
-├── Kool/          # rakenduse lähtekood (Visual Studio projekt)
-├── Docs/          # dokumentatsioon
-├── Kool.slnx      # Visual Studio lahenduse fail
-└── loputoo.md     # lõputöö tekst (teooria + praktiline kirjeldus)
+├── Kool/          # application source code (Visual Studio project)
+├── Docs/          # documentation
+├── Kool.slnx      # Visual Studio solution file
+└── loputoo.md     # thesis text (theory + practical description)
 ```
 
-##  Käivitamine
+## Getting started
 
-1. Ava `Kool.slnx` Visual Studios
-2. Veendu, et LocalDB on paigaldatud
-3. Käivita Package Manager Console'is:
+1. Open `Kool.slnx` in Visual Studio
+2. Make sure LocalDB is installed
+3. Run in the Package Manager Console:
    ```
    Update-Database
    ```
-4. Käivita rakendus (F5)
+4. Run the app (F5)
 
-##  Mida saaks edasi arendada
+##  Possible next steps
 
-- Veebiversioon (ASP.NET Core), et rakendust saaks kasutada mitu kasutajat korraga
-- Kasutajarollid ja autentimine (admin vs õpilane)
-- Automaattestid ja CI/CD (nt GitHub Actions)
-- Parem andmebaasi varundus tootmiskeskkonnas
+- A web version (ASP.NET Core) so multiple users can access it at once
+- User roles and authentication (admin vs. student)
+- Automated tests and CI/CD (e.g. GitHub Actions)
+- Better database backup handling for production
 
 ---
 
-**Autor:** Anastasiia Radasheva
+**Author:** Anastasiia Radasheva
