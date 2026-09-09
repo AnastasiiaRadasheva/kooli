@@ -9,14 +9,12 @@ Väiksemad koolid ja keelekursuste pakkujad ei vaja alati suurt veebisüsteemi �
 - lisada, muuta ja kustutada **keelekursuseid**
 - hallata **õpetajate** andmeid
 - vaadata ja hallata **õpilaste registreerimisi** kursustele
-- kõike seda mugavas Windows Forms liideses, andmed salvestuvad kohalikku andmebaasi
 
 ##  Tehnoloogiad
 
 | Tehnoloogia | Kasutuseesmärk |
 |---|---|
 | **C#** | rakenduse loogika |
-| **Windows Forms** | kasutajaliides |
 | **Entity Framework Core** (Code First) | andmemudel ja andmebaasi haldus |
 | **LocalDB** | kohalik andmebaas arenduseks ja testimiseks |
 | **EF Core Migrations** | andmebaasi skeemi versioonihaldus |
@@ -27,7 +25,7 @@ Väiksemad koolid ja keelekursuste pakkujad ei vaja alati suurt veebisüsteemi �
 Rakendus on üles ehitatud kolmekihiliselt, et kood oleks selge ja hooldatav:
 
 ```
-Presentation (Windows Forms)
+Presentation 
         ↓
 Business Logic (teenused, valideerimine)
         ↓
