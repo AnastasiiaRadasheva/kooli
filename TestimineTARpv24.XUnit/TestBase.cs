@@ -2,11 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
+using TestimineTARpv24.XUnit.Macros;
+using TestimineTARpv24.XUnit.Mock;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
 using Kool.Models;
-using Kool; 
+using Kool;
+using Microsoft.Extensions.Configuration;
+
+
 
 namespace TestimineTARpv24.XUnit
 {
@@ -21,7 +26,10 @@ namespace TestimineTARpv24.XUnit
 
             serviceProvider = services.BuildServiceProvider();
         }
+        public void Dispose()
+        {
 
+        }
         protected T Svc<T>()
         {
             return serviceProvider.GetService<T>();
@@ -35,7 +43,7 @@ namespace TestimineTARpv24.XUnit
             services.AddScoped<KoolitusController>();
             services.AddScoped<IHostEnvironment, MockIHostEnvironment>();
 
-            services.AddDbContext<TestimineTARpv24Context>(x =>
+            services.AddDbContext<ApplicationDbContext>(x =>
             {
                 x.UseInMemoryDatabase("TEST");
                 x.ConfigureWarnings(b => b.Ignore(InMemoryEventId.TransactionIgnoredWarning));
@@ -46,6 +54,11 @@ namespace TestimineTARpv24.XUnit
 
       //Leia üles kindel teenus teenusepakkujakt
       //serviceProvider omab kontrollireti instantse ning GetService hangib selle X tüüpi kontrolleri
+
+        //registreerib mactodes teenusied kui nad ei ole liidesed ja ei ole abstraktsed
+        //om vaja test setupide 
+        //makro --> teenus 
+        //teenused siia lisatakse markodest muid teenuseid
         private static void RegisterMacros(IServiceCollection services)
         {
          

@@ -347,6 +347,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\uploads\opetajad\" />
     <Folder Include="images\" />
+    <Folder Include="NewFolder1\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

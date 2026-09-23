@@ -1,5 +1,4 @@
 <Solution>
-  <Project Path="../WebApplication1/WebApplication1.csproj" Id="bc00294d-d63a-4bb1-b8b1-b2d854b037ae" />
   <Project Path="Kool/Kool.csproj" Id="f4f96a66-cc00-4255-af59-2338eb72c7c7" />
   <Project Path="TestimineTARpv24.XUnit/TestimineTARpv24.XUnit.csproj" Id="c2534f5f-5f61-41ec-88e0-120d8eb2db33" />
 </Solution>
